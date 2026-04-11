@@ -1,35 +1,28 @@
-import { useEffect, useState } from "react";
-import { getCases } from "./api/caseApi";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import CaseList from "./components/CaseList/CaseList";
+import CreateCase from "./pages/CreateCase";
 
 function App() {
-  const [cases, setCases] = useState([]);
-
-useEffect(() => {
-  getCases()
-    .then((res) => {
-      console.log(res.data);
-      setCases(res.data.content); // 👈 FIX
-    })
-    .catch((err) => console.error(err));
-}, []);
+  const token = localStorage.getItem("token");
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Ärenden</h1>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
 
-      {cases.length === 0 ? (
-        <p>Inga ärenden ännu...</p>
-      ) : (
-        <ul>
-          {cases.map((c: any) => (
-            <li key={c.id}>
-              {c.title} - {c.status}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+        {/* Skyddad route */}
+        <Route
+          path="/"
+          element={token ? <CaseList /> : <Login />}
+        />
+
+        <Route
+          path="/create"
+          element={token ? <CreateCase /> : <Login />}
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
-
 export default App;

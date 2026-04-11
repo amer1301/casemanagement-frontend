@@ -1,0 +1,26 @@
+.case-item {
+  border: 1px solid #ccc;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  background: white;
+  width: 300px;
+}
+
+.case-title {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.case-status {
+  margin-top: 5px;
+  color: gray;
+}
+
+.case-actions {
+  margin-top: 10px;
+}
+
+.case-actions button {
+  margin-right: 10px;
+}
