@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
@@ -15,14 +16,16 @@ function Login() {
         password,
       });
 
-      localStorage.setItem("token", res.data.token);
+      const token = res.data.token;
 
-      console.log("Inloggad!");
+      localStorage.setItem("token", token);
 
+      // Redirect
       navigate("/");
 
-    } catch (err) {
+    } catch (err: any) {
       console.error("Login failed", err);
+      setError("Fel email eller lösenord");
     }
   };
 
@@ -30,10 +33,22 @@ function Login() {
     <div>
       <h2>Logga in</h2>
 
-      <input onChange={(e) => setEmail(e.target.value)} />
-      <input type="password" onChange={(e) => setPassword(e.target.value)} />
+      <input
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+
+      <input
+        type="password"
+        placeholder="Lösenord"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
 
       <button onClick={handleLogin}>Logga in</button>
+
+      {error && <p>{error}</p>}
     </div>
   );
 }

@@ -15,8 +15,22 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
+
 // Hämta alla ärenden
 export const getCases = () => API.get("/cases");
+
+// Hämta användarens ärenden
+export const getMyCases = () => API.get("/cases/my");
 
 // Uppdatera status
 export const updateStatus = (id: number, status: string) =>
