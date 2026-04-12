@@ -17,8 +17,10 @@ function Login() {
       });
 
       const token = res.data.token;
+      const role = res.data.role;
 
       localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
 
       // Redirect
       navigate("/");

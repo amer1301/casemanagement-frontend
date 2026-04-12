@@ -40,4 +40,13 @@ export const updateStatus = (id: number, status: string) =>
 export const CreateCase = (data: any) =>
   API.post("/cases", data);
 
+export const getCaseById = (id: string) =>
+  API.get(`/cases/${id}`);
+
+export const getCaseLogs = (id: string) =>
+  API.get(`/cases/${id}/logs`);
+
+export const updateCaseStatus = (id: string, status: string) =>
+  API.patch(`/cases/${id}/status`, { status });
+
 export default API;

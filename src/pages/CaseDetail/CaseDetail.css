@@ -9,3 +9,49 @@
   padding: 20px;
   border-radius: 10px;
 }
+
+.case-detail-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.case-main {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+}
+
+.case-sidebar {
+  background: #f5f7fa;
+  padding: 1.5rem;
+  border-radius: 10px;
+}
+
+.badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.badge.submitted {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.badge.approved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge.rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.log-item {
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+}
