@@ -1,6 +1,8 @@
-export type Log = {
+export interface Log {
   id: number;
-  action: string;
-  userEmail: string;
-  timestamp: string;
-};
+  message: string;
+  createdAt: string;
+  user: {
+    username: string;
+  };
+}

@@ -4,6 +4,10 @@ const API = axios.create({
   baseURL: "http://localhost:8080",
 });
 
+// ====================
+// INTERCEPTORS
+// ====================
+
 // Lägg till JWT automatiskt
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
@@ -15,6 +19,7 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
+// Hantera 401
 API.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -26,27 +31,30 @@ API.interceptors.response.use(
   }
 );
 
+// ====================
+// CASE API
+// ====================
+
 // Hämta alla ärenden
 export const getCases = () => API.get("/cases");
 
 // Hämta användarens ärenden
 export const getMyCases = () => API.get("/cases/my");
 
-// Uppdatera status
-export const updateStatus = (id: number, status: string) =>
-  API.patch(`/cases/${id}/status`, { status });
-
-// Skapa ärenden
-export const CreateCase = (data: any) =>
-  API.post("/cases", data);
-
+// Hämta ett ärende
 export const getCaseById = (id: string) =>
   API.get(`/cases/${id}`);
 
-export const getCaseLogs = (id: string) =>
-  API.get(`/cases/${id}/logs`);
+// Skapa ärende
+export const createCase = (data: any) =>
+  API.post("/cases", data);
 
+// Uppdatera status
 export const updateCaseStatus = (id: string, status: string) =>
   API.patch(`/cases/${id}/status`, { status });
+
+// Hämta loggar
+export const getCaseLogs = (id: string) =>
+  API.get(`/cases/${id}/logs`);
 
 export default API;
