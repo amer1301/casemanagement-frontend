@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCases } from "../../api/caseApi";
+import { getCases, getMyCases } from "../../api/caseApi";
 import "./CaseList.css";
 import { useNavigate } from "react-router-dom";
 
@@ -16,25 +16,42 @@ useEffect(() => {
     .catch((err) => console.error(err));
 }, []);
 
+useEffect(() => {
+  getMyCases().then(res => setCases(res.data));
+}, []);
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
   };
 
   return (
-    <div>
+    <div className="container">
       <h2>Alla ärenden</h2>
+
       <button onClick={handleLogout}>Logga ut</button>
+
       {!cases || cases.length === 0 ? (
-  <p>Inga ärenden</p>
-) : (
-        <ul>
+        <p>Inga ärenden</p>
+      ) : (
+        <div className="case-grid">
           {cases.map((c) => (
-            <li key={c.id}>
-              {c.title} - {c.status}
-            </li>
+            <div key={c.id} className="case-card">
+              <h3>{c.title}</h3>
+
+              <span className={`badge ${c.status.toLowerCase()}`}>
+                {c.status}
+              </span>
+
+              <button
+                className="open-btn"
+                onClick={() => navigate(`/cases/${c.id}`)}
+              >
+                Öppna
+              </button>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

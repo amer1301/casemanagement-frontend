@@ -1,0 +1,21 @@
+.dashboard {
+  padding: 20px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.card {
+  padding: 20px;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.blue { background: #e0f2fe; }
+.green { background: #dcfce7; }
+.red { background: #fee2e2; }

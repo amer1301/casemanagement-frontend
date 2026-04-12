@@ -1,0 +1,11 @@
+.detail {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.left, .right {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+}
