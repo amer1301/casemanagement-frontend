@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CreateCase } from "../../api/caseApi";
+import { createCase } from "../../api/caseApi";
 import { useNavigate } from "react-router-dom";
 
 function CreateCasePage() {
@@ -8,7 +8,7 @@ function CreateCasePage() {
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
-    await CreateCase({ title, description });
+    await createCase({ title, description });
     navigate("/");
   };
 

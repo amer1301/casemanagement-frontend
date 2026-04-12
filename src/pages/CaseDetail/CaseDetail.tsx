@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getCaseById, getCaseLogs, updateCaseStatus } from "../../api/caseApi";
-import "./CaseDetail.css";
-import type { Log } from "../../types/Log";
+import {
+    getCaseById,
+    getCaseLogs,
+    updateCaseStatus,
+} from "../../api/caseApi";
+
 import type { Case } from "../../types/Case";
+import type { Log } from "../../types/Log";
 
 function CaseDetail() {
     const { id } = useParams();
@@ -12,7 +16,9 @@ function CaseDetail() {
     const [logs, setLogs] = useState<Log[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // Hämta case + logs
+    // ====================
+    // HÄMTA DATA
+    // ====================
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -31,33 +37,37 @@ function CaseDetail() {
         fetchData();
     }, [id]);
 
-    // Uppdatera status (ADMIN)
+    // ====================
+    // UPPDATERA STATUS
+    // ====================
     const handleStatus = async (status: string) => {
         try {
-            console.log("CLICK STATUS:", status);
-            console.log("ID:", id);
+            await updateCaseStatus(id!, status);
 
-            const res = await updateCaseStatus(id!, status);
+            // 🔥 HÄMTA OM DATA (viktigt!)
+            const updated = await getCaseById(id!);
+            setCaseData(updated.data);
 
-            console.log("RESPONSE:", res);
-
-            setCaseData((prev) =>
-                prev ? { ...prev, status } : prev
-            );
+            const updatedLogs = await getCaseLogs(id!);
+            setLogs(updatedLogs.data);
         } catch (err) {
             console.error("ERROR:", err);
         }
     };
 
+    // ====================
+    // LOADING / ERROR
+    // ====================
     if (loading) return <p>Laddar...</p>;
     if (!caseData) return <p>Kunde inte hämta ärendet</p>;
 
     const role = localStorage.getItem("role");
-    console.log("ROLE:", role);
 
+    // ====================
+    // UI
+    // ====================
     return (
         <div className="case-detail">
-
             {/* VÄNSTER */}
             <div className="case-main">
                 <h1>{caseData.title}</h1>
@@ -94,11 +104,11 @@ function CaseDetail() {
                 ) : (
                     logs.map((log) => (
                         <div key={log.id} className="log-item">
-                            <p>{log.action}</p>
+                            <p>{log.message}</p>
                             <small>
-                                {log.userEmail}{" "}
-                                {log.timestamp
-                                    ? new Date(log.timestamp).toLocaleString()
+                                {log.user?.username}{" "}
+                                {log.createdAt
+                                    ? new Date(log.createdAt).toLocaleString()
                                     : "Okänt datum"}
                             </small>
                         </div>

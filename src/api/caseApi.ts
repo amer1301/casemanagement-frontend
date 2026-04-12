@@ -45,16 +45,16 @@ export const getMyCases = () => API.get("/cases/my");
 export const getCaseById = (id: string) =>
   API.get(`/cases/${id}`);
 
-// Skapa ärende
-export const createCase = (data: any) =>
-  API.post("/cases", data);
+// Hämta loggar för ett ärende
+export const getCaseLogs = (id: string) =>
+  API.get(`/cases/${id}/logs`);
 
 // Uppdatera status
 export const updateCaseStatus = (id: string, status: string) =>
   API.patch(`/cases/${id}/status`, { status });
 
-// Hämta loggar
-export const getCaseLogs = (id: string) =>
-  API.get(`/cases/${id}/logs`);
+// Skapa ärende
+export const createCase = (data: any) =>
+  API.post("/cases", data);
 
 export default API;
