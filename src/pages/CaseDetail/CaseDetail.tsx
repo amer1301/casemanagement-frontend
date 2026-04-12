@@ -2,20 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getCaseById, getCaseLogs, updateCaseStatus } from "../../api/caseApi";
 import "./CaseDetail.css";
-
-type Case = {
-    id: number;
-    title: string;
-    description: string;
-    status: string;
-};
-
-type Log = {
-    id: number;
-    action: string;
-    createdAt: string;
-    userEmail: string;
-};
+import type { Log } from "../../types/Log";
+import type { Case } from "../../types/Case";
 
 function CaseDetail() {
     const { id } = useParams();
@@ -44,22 +32,22 @@ function CaseDetail() {
     }, [id]);
 
     // Uppdatera status (ADMIN)
-const handleStatus = async (status: string) => {
-    try {
-        console.log("CLICK STATUS:", status);
-        console.log("ID:", id);
+    const handleStatus = async (status: string) => {
+        try {
+            console.log("CLICK STATUS:", status);
+            console.log("ID:", id);
 
-        const res = await updateCaseStatus(id!, status);
+            const res = await updateCaseStatus(id!, status);
 
-        console.log("RESPONSE:", res);
+            console.log("RESPONSE:", res);
 
-        setCaseData((prev) =>
-            prev ? { ...prev, status } : prev
-        );
-    } catch (err) {
-        console.error("ERROR:", err);
-    }
-};
+            setCaseData((prev) =>
+                prev ? { ...prev, status } : prev
+            );
+        } catch (err) {
+            console.error("ERROR:", err);
+        }
+    };
 
     if (loading) return <p>Laddar...</p>;
     if (!caseData) return <p>Kunde inte hämta ärendet</p>;
@@ -108,8 +96,10 @@ const handleStatus = async (status: string) => {
                         <div key={log.id} className="log-item">
                             <p>{log.action}</p>
                             <small>
-                                {log.userEmail} –{" "}
-                                {new Date(log.createdAt).toLocaleString()}
+                                {log.userEmail}{" "}
+                                {log.timestamp
+                                    ? new Date(log.timestamp).toLocaleString()
+                                    : "Okänt datum"}
                             </small>
                         </div>
                     ))
