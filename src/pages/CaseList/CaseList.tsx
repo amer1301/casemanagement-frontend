@@ -1,70 +1,69 @@
 import { useEffect, useState } from "react";
 import { getCases, getMyCases } from "../../api/caseApi";
-import "./CaseList.css";
 import { useNavigate } from "react-router-dom";
 import CaseCard from "../../components/CaseCard/CaseCard";
+import Layout from "../../components/layout/Layout";
+import styles from "./CaseList.module.css";
 
 function CaseList() {
   const [cases, setCases] = useState<any[]>([]);
   const navigate = useNavigate();
-const [myOnly, setMyOnly] = useState(false);
+  const [myOnly, setMyOnly] = useState(false);
 
-useEffect(() => {
-  const fetchCases = async () => {
-    try {
-      const res = myOnly
-        ? await getMyCases()
-        : await getCases();
+  useEffect(() => {
+    const fetchCases = async () => {
+      try {
+        const res = myOnly
+          ? await getMyCases()
+          : await getCases();
 
-      setCases(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+        setCases(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
-  fetchCases();
-}, [myOnly]);
-
-useEffect(() => {
-  getMyCases().then(res => setCases(res.data));
-}, []);
+    fetchCases();
+  }, [myOnly]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
   };
 
-return (
-  <div className="container">
-    
-    {/* HEADER */}
-    <div className="case-header">
-      <h2>Alla ärenden</h2>
+  return (
+    <Layout>
+      <div className={styles.container}>
+        
+        {/* HEADER */}
+        <div className={styles["case-header"]}>
+          <h2>Alla ärenden</h2>
 
-      <div className="actions">
-        <button onClick={() => setMyOnly(!myOnly)}>
-          {myOnly ? "Visa alla" : "Mina ärenden"}
-        </button>
+          <div className={styles.actions}>
+            <button onClick={() => setMyOnly(!myOnly)}>
+              {myOnly ? "Visa alla" : "Mina ärenden"}
+            </button>
 
-        <button onClick={handleLogout}>
-          Logga ut
-        </button>
+            <button onClick={handleLogout}>
+              Logga ut
+            </button>
+          </div>
+        </div>
+
+        {/* LISTA */}
+        {!cases || cases.length === 0 ? (
+          <p>Inga ärenden</p>
+        ) : (
+          <div className={styles["case-grid"]}>
+            {cases.map((c) => (
+              <CaseCard key={c.id} caseItem={c} />
+            ))}
+          </div>
+        )}
+        
       </div>
-    </div>
-
-    {/* LISTA */}
-    {!cases || cases.length === 0 ? (
-      <p>Inga ärenden</p>
-    ) : (
-      <div className="case-grid">
-        {cases.map((c) => (
-          <CaseCard key={c.id} caseItem={c} />
-        ))}
-      </div>
-    )}
-    
-  </div>
-);
+    </Layout>
+  );
 }
 
 export default CaseList;

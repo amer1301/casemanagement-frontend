@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Layout from "../../components/layout/Layout";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -32,6 +33,7 @@ function Login() {
   };
 
   return (
+    <Layout>
     <div>
       <h2>Logga in</h2>
 
@@ -52,6 +54,7 @@ function Login() {
 
       {error && <p>{error}</p>}
     </div>
+    </Layout>
   );
 }
 

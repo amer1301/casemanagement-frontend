@@ -1,0 +1,47 @@
+.layout {
+  display: flex;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.sidebar {
+  width: 240px;
+  background: #020617;
+  color: white;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nav p {
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #cbd5f5;
+}
+
+.nav p:hover {
+  background: #1e293b;
+  color: white;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+  padding: 30px;
+  background: #f8fafc;
+}

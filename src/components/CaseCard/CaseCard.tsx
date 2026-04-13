@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import "./CaseCard.css";
+import styles from "./CaseCard.module.css";
 
 type Case = {
   id: number;
@@ -16,19 +16,26 @@ function CaseCard({ caseItem }: Props) {
   const navigate = useNavigate();
 
   return (
-    <div className="case-card">
+    <div className={styles.caseCard}>
       <h3>{caseItem.title}</h3>
 
-      <p className="description">
+      <p className={styles.description}>
         {caseItem.description}
       </p>
 
-      <div className="case-footer">
-        <span className={`badge ${caseItem.status.toLowerCase()}`}>
+      <div className={styles.caseFooter}>
+        <span
+          className={`${styles.badge} ${
+            styles[caseItem.status.toLowerCase()]
+          }`}
+        >
           {caseItem.status}
         </span>
 
-        <button onClick={() => navigate(`/cases/${caseItem.id}`)}>
+        <button
+          className={styles.button}
+          onClick={() => navigate(`/cases/${caseItem.id}`)}
+        >
           Öppna
         </button>
       </div>

@@ -1,0 +1,22 @@
+.header {
+  height: 70px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  border-bottom: 1px solid #eee;
+}
+
+.search {
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+  width: 300px;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

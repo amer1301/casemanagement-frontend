@@ -1,0 +1,38 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* grid layout */
+.grid {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 20px;
+}
+
+/* cards */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.card {
+  background: #1e293b;
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+/* profile */
+.sidebar {
+  background: #1e293b;
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.profileCard {
+  margin-top: 10px;
+}

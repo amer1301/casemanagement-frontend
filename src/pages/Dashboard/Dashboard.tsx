@@ -1,64 +1,80 @@
 import { useEffect, useState } from "react";
 import { getCases } from "../../api/caseApi";
-import { useNavigate } from "react-router-dom";
-import type { Case } from "../../types/Case";
+import Layout from "../../components/layout/Layout";
+import styles from "./Dashboard.module.css";
 
 function Dashboard() {
-  const [cases, setCases] = useState<Case[]>([]);
-  const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
+  const [cases, setCases] = useState<any[]>([]);
+
+  const user = {
+    name: localStorage.getItem("username") || "Admin",
+    email: localStorage.getItem("email") || "admin@mail.com",
+    role: localStorage.getItem("role"),
+  };
 
   useEffect(() => {
-    const fetchCases = async () => {
-      try {
-        const res = await getCases();
-        setCases(res.data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCases();
+    getCases().then(res => setCases(res.data));
   }, []);
 
-  if (loading) return <p>Laddar...</p>;
-
-  // Statistik
+  // statistik från dina riktiga data
   const total = cases.length;
-  const submitted = cases.filter(c => c.status === "SUBMITTED").length;
   const approved = cases.filter(c => c.status === "APPROVED").length;
   const rejected = cases.filter(c => c.status === "REJECTED").length;
+  const submitted = cases.filter(c => c.status === "SUBMITTED").length;
 
   return (
-    <div className="container">
-      <h2>Dashboard</h2>
-        <button onClick={() => navigate("/")}>
-  Till ärenden
-</button>
-      <div className="dashboard-cards">
-        <div className="card">
-          <h3>Totala ärenden</h3>
-          <p>{total}</p>
+    <Layout>
+      <div className={styles.dashboard}>
+
+        {/* TOP */}
+        <h2>Welcome back, {user.name}</h2>
+
+        {/* GRID */}
+        <div className={styles.grid}>
+
+          {/* LEFT */}
+          <div className={styles.main}>
+
+            <div className={styles.cards}>
+              <div className={styles.card}>
+                <p>Total</p>
+                <h3>{total}</h3>
+              </div>
+
+              <div className={styles.card}>
+                <p>Submitted</p>
+                <h3>{submitted}</h3>
+              </div>
+
+              <div className={styles.card}>
+                <p>Approved</p>
+                <h3>{approved}</h3>
+              </div>
+
+              <div className={styles.card}>
+                <p>Rejected</p>
+                <h3>{rejected}</h3>
+              </div>
+            </div>
+
+          </div>
+
+          {/* RIGHT (PROFIL) */}
+          <div className={styles.sidebar}>
+            <h3>Profil</h3>
+
+            <div className={styles.profileCard}>
+              <p><strong>{user.name}</strong></p>
+              <p>{user.email}</p>
+              <p>{user.role}</p>
+            </div>
+
+          </div>
+
         </div>
 
-        <div className="card">
-          <h3>Inskickade</h3>
-          <p>{submitted}</p>
-        </div>
-
-        <div className="card">
-          <h3>Godkända</h3>
-          <p>{approved}</p>
-        </div>
-
-        <div className="card">
-          <h3>Avslagna</h3>
-          <p>{rejected}</p>
-        </div>
       </div>
-    </div>
+    </Layout>
   );
 }
 

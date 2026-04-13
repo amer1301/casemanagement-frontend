@@ -3,9 +3,9 @@ ul {
 }
 
 .container {
-  max-width: 800px;
-  margin: 0 auto;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .case-header {
@@ -17,6 +17,21 @@ ul {
 .actions {
   display: flex;
   gap: 10px;
+}
+
+.actions button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+}
+
+.case-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
 }
 
 .status {
@@ -33,10 +48,3 @@ ul {
 .submitted { background: #dbeafe; color: #1d4ed8; }
 .approved { background: #dcfce7; color: #166534; }
 .rejected { background: #fee2e2; color: #991b1b; }
-
-.case-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 16px;
-  margin-top: 20px;
-}
