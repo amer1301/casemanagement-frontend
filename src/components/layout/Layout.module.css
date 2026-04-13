@@ -113,6 +113,13 @@
   transition: 0.2s;
 }
 
+.navItem:hover {
+  background: rgba(255,255,255,0.10);
+  border-radius: 5px;
+  padding-left: 1em;
+}
+
+
 .navItem img {
   width: 18px;
   height: 18px;
