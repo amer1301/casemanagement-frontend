@@ -2,6 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
+import styles from "./Login.module.css";
+import heroImg from "../../assets/Hero Startsida.png";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -10,7 +12,9 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+
     try {
       const res = await axios.post("http://localhost:8080/api/auth/login", {
         email,
@@ -33,26 +37,41 @@ function Login() {
 
   return (
     <Layout>
-    <div>
-      <h2>Logga in</h2>
+      <div className={styles.wrapper}>
+        
+        <div className={styles.hero}>
+          <img src={heroImg} alt="hero" />
+        </div>
 
-      <input
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+        <form className={styles.card} onSubmit={handleLogin}>
+          <h2>Logga in</h2>
 
-      <input
-        type="password"
-        placeholder="Lösenord"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+          <input
+            type="email"
+            placeholder="E-post"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-      <button onClick={handleLogin}>Logga in</button>
+          <input
+            type="password"
+            placeholder="Lösenord"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-      {error && <p>{error}</p>}
-    </div>
+          <div className={styles.buttonGroup}>
+  <button onClick={handleLogin}>Logga in</button>
+
+  <button onClick={() => navigate("/register")}>
+    Registrera
+  </button>
+</div>
+
+          {error && <p className={styles.error}>{error}</p>}
+        </form>
+
+      </div>
     </Layout>
   );
 }

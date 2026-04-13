@@ -2,12 +2,12 @@ import styles from "./Header.module.css";
 import profileImg from "../../assets/Profilbild Default.png";
 
 const Header = () => {
-  const username = "Amanda";
+  const username = "Amanda"; // ska ersättas senare med riktig data
 
   return (
     <div className={styles.header}>
       <p className={styles.welcome}>
-        Välkommen tillbaka, {username}
+        Välkommen tillbaka {username}
       </p>
 
       <img
