@@ -1,22 +1,22 @@
 .header {
-  height: 70px;
-  background: white;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 0 30px;
-  border-bottom: 1px solid #eee;
-}
-
-.search {
-  padding: 10px 16px;
-  border-radius: 20px;
-  border: 1px solid #ddd;
-  width: 300px;
-}
-
-.user {
-  display: flex;
   align-items: center;
-  gap: 10px;
+  padding: 20px 30px;
+
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.welcome {
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.1);
 }

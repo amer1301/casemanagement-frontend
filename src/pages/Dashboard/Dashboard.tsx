@@ -16,7 +16,6 @@ function Dashboard() {
     getCases().then(res => setCases(res.data));
   }, []);
 
-  // statistik från dina riktiga data
   const total = cases.length;
   const approved = cases.filter(c => c.status === "APPROVED").length;
   const rejected = cases.filter(c => c.status === "REJECTED").length;
@@ -26,13 +25,10 @@ function Dashboard() {
     <Layout>
       <div className={styles.dashboard}>
 
-        {/* TOP */}
-        <h2>Welcome back, {user.name}</h2>
+        <h2>Välkommen tillbaka {user.name}</h2>
 
-        {/* GRID */}
         <div className={styles.grid}>
 
-          {/* LEFT */}
           <div className={styles.main}>
 
             <div className={styles.cards}>
@@ -59,7 +55,6 @@ function Dashboard() {
 
           </div>
 
-          {/* RIGHT (PROFIL) */}
           <div className={styles.sidebar}>
             <h3>Profil</h3>
 

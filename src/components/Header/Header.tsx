@@ -1,17 +1,20 @@
 import styles from "./Header.module.css";
+import profileImg from "../../assets/Profilbild Default.png";
 
 const Header = () => {
+  const username = "Amanda";
+
   return (
     <div className={styles.header}>
-      <input
-        className={styles.search}
-        placeholder="Search..."
-      />
+      <p className={styles.welcome}>
+        Välkommen tillbaka, {username}
+      </p>
 
-      <div className={styles.user}>
-        <span>🔔</span>
-        <span>Admin</span>
-      </div>
+      <img
+        src={profileImg}
+        alt="profilbild"
+        className={styles.avatar}
+      />
     </div>
   );
 };

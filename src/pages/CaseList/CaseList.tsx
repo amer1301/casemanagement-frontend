@@ -1,22 +1,17 @@
 import { useEffect, useState } from "react";
-import { getCases, getMyCases } from "../../api/caseApi";
+import { getCases } from "../../api/caseApi";
 import { useNavigate } from "react-router-dom";
-import CaseCard from "../../components/CaseCard/CaseCard";
 import Layout from "../../components/layout/Layout";
 import styles from "./CaseList.module.css";
 
 function CaseList() {
   const [cases, setCases] = useState<any[]>([]);
   const navigate = useNavigate();
-  const [myOnly, setMyOnly] = useState(false);
 
   useEffect(() => {
     const fetchCases = async () => {
       try {
-        const res = myOnly
-          ? await getMyCases()
-          : await getCases();
-
+        const res = await getCases();
         setCases(res.data);
       } catch (err) {
         console.error(err);
@@ -24,43 +19,59 @@ function CaseList() {
     };
 
     fetchCases();
-  }, [myOnly]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
+  }, []);
 
   return (
     <Layout>
       <div className={styles.container}>
         
-        {/* HEADER */}
-        <div className={styles["case-header"]}>
-          <h2>Alla ärenden</h2>
-
-          <div className={styles.actions}>
-            <button onClick={() => setMyOnly(!myOnly)}>
-              {myOnly ? "Visa alla" : "Mina ärenden"}
-            </button>
-
-            <button onClick={handleLogout}>
-              Logga ut
-            </button>
-          </div>
+        <div className={styles.header}>
+          <h2>Ärenden</h2>
         </div>
 
-        {/* LISTA */}
-        {!cases || cases.length === 0 ? (
-          <p>Inga ärenden</p>
-        ) : (
-          <div className={styles["case-grid"]}>
-            {cases.map((c) => (
-              <CaseCard key={c.id} caseItem={c} />
-            ))}
+        <div className={styles.table}>
+
+          <div className={styles.tableHeader}>
+            <span>Titel</span>
+            <span>Skapad</span>
+            <span>Handläggare</span>
+            <span>Status</span>
           </div>
-        )}
-        
+
+          {!cases || cases.length === 0 ? (
+            <p className={styles.empty}>Inga ärenden</p>
+          ) : (
+            cases.map((c) => (
+              <div
+                key={c.id}
+                className={styles.row}
+                onClick={() => navigate(`/cases/${c.id}`)}
+              >
+                <span>{c.title}</span>
+
+                <span>
+                  {c.createdAt
+                    ? new Date(c.createdAt).toLocaleDateString()
+                    : "—"}
+                </span>
+
+                <span>
+                  {c.assignedTo?.username || "Ej tilldelad"}
+                </span>
+
+                <span
+                  className={`${styles.badge} ${
+                    styles[c.status.toLowerCase()]
+                  }`}
+                >
+                  {c.status}
+                </span>
+              </div>
+            ))
+          )}
+
+        </div>
+
       </div>
     </Layout>
   );

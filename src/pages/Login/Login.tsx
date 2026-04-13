@@ -23,7 +23,6 @@ function Login() {
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
 
-      // Redirect
       navigate("/");
 
     } catch (err: any) {

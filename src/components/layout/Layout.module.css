@@ -1,6 +1,6 @@
 .layout {
   display: flex;
-  height: 100vh;
+  width: 100%;
   font-family: Arial, sans-serif;
 }
 
@@ -8,40 +8,117 @@
   width: 240px;
   background: #020617;
   color: white;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav a {
+  padding: 12px;
+  border-radius: 10px;
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+.nav a:hover {
+  background: #1e293b;
+  color: white;
+}
+
+.layout {
+  display: flex;
+  width: 100%;
 }
 
 .logo {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 30px;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 40px;
 }
 
 .nav {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-
-.nav p {
-  padding: 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  color: #cbd5f5;
-}
-
-.nav p:hover {
-  background: #1e293b;
-  color: white;
+  gap: 8px;
 }
 
 .main {
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+  height: 100%;
+  background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  overflow: hidden;
 }
 
 .content {
   flex: 1;
   padding: 30px;
-  background: #f8fafc;
+  overflow-y: auto;
+}
+
+.page {
+  height: 100vh;
+  background: linear-gradient(135deg, #0f172a, #1e3a8a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.app {
+  width: 1200px;
+  height: 100vh;
+  display: flex;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  align-items: stretch;
+}
+
+.sidebar {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 250px;
+  background: #020617;
+}
+
+.logout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+  margin-top: auto;
+  cursor: pointer;
+  color: #9ca3af;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.logout img {
+  width: 18px;
+  height: 18px;
+  filter: brightness(0) invert(1);
+}
+
+.logout:hover {
+  color: white;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.navItem img {
+  width: 18px;
+  height: 18px;
 }
