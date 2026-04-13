@@ -16,20 +16,29 @@ function Login() {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/login", {
+      const res = await axios.post<{
+        token: string;
+        role: string;
+        email: string;
+        name: string;
+      }>("http://localhost:8080/api/auth/login", {
         email,
         password,
       });
 
       const token = res.data.token;
       const role = res.data.role;
+      const userEmail = res.data.email;   // ✅ renamed
+      const name = res.data.name;
 
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
+      localStorage.setItem("email", userEmail);
+      localStorage.setItem("name", name);
 
       navigate("/");
 
-    } catch (err: any) {
+    } catch (err) {
       console.error("Login failed", err);
       setError("Fel email eller lösenord");
     }
@@ -61,12 +70,15 @@ function Login() {
           />
 
           <div className={styles.buttonGroup}>
-  <button onClick={handleLogin}>Logga in</button>
+            <button type="submit">Logga in</button> {/* ✅ FIX */}
 
-  <button onClick={() => navigate("/register")}>
-    Registrera
-  </button>
-</div>
+            <button
+              type="button"
+              onClick={() => navigate("/register")}
+            >
+              Registrera
+            </button>
+          </div>
 
           {error && <p className={styles.error}>{error}</p>}
         </form>

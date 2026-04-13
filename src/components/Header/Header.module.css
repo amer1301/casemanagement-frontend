@@ -3,20 +3,66 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 30px;
-
-  background: rgba(255, 255, 255, 0.02);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
 }
 
 .welcome {
-  color: #9ca3af;
-  font-size: 14px;
+  color: #94a3b8;
+}
+
+.profileWrapper {
+  position: relative;
 }
 
 .avatar {
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.avatar:hover {
+  transform: scale(1.05);
+}
+
+.dropdown {
+  position: absolute;
+  top: 60px;
+  right: 0;
+
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(10px);
+
+  border-radius: 12px;
+  padding: 16px;
+  min-width: 200px;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.05);
+
+  animation: fadeIn 0.2s ease;
+}
+
+.dropdown p {
+  margin: 5px 0;
+  color: white;
+}
+
+.role {
+  color: #3b82f6;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
