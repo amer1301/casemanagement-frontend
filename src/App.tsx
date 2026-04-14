@@ -10,14 +10,14 @@ import Register from "./pages/Register/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-
   return (
     <Router>
       <Routes>
+
         {/* LOGIN */}
         <Route path="/login" element={<Login />} />
 
-        {/* ALLA SKYDDADE ROUTES */}
+        {/* CASE LIST (admin/manager) */}
         <Route
           path="/"
           element={
@@ -27,6 +27,17 @@ function App() {
           }
         />
 
+        {/* USER – MINA ÄRENDEN */}
+        <Route
+          path="/my-cases"
+          element={
+            <ProtectedRoute allowedRoles={["USER"]}>
+              <CaseList isMyCases />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* CASE DETAIL */}
         <Route
           path="/cases/:id"
           element={
@@ -36,10 +47,11 @@ function App() {
           }
         />
 
+        {/* CREATE */}
         <Route
           path="/create"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["USER"]}>
               <CreateCase />
             </ProtectedRoute>
           }
@@ -50,12 +62,14 @@ function App() {
           path="/dashboard"
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "MANAGER"]}>
-  <Dashboard />
-</ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
           }
         />
 
+        {/* REGISTER */}
         <Route path="/register" element={<Register />} />
+
       </Routes>
     </Router>
   );

@@ -27,14 +27,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [role, setRole] = useState<Role | null>(null);
 
     // Uppdatera roll när token ändras
-    useEffect(() => {
-        if (token) {
-            const decoded = parseJwt(token);
-            setRole(decoded?.role ?? null);
-        } else {
-            setRole(null);
+useEffect(() => {
+    if (token) {
+        const decoded = parseJwt(token);
+
+        let rawRole = decoded?.role ?? null;
+
+        if (rawRole && typeof rawRole === "string") {
+            rawRole = rawRole.replace("ROLE_", "");
         }
-    }, [token]);
+
+        setRole(rawRole as Role);
+    } else {
+        setRole(null);
+    }
+}, [token]);
 
     // Hantera token + localStorage
     const setToken = (newToken: string | null) => {

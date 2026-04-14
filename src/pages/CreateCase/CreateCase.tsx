@@ -15,7 +15,7 @@ function CreateCasePage() {
     try {
       setLoading(true);
       await createCase({ title, description });
-      navigate("/");
+      navigate("/my-cases");
     } catch (err) {
       console.error(err);
     } finally {

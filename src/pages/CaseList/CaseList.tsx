@@ -4,29 +4,44 @@ import { useNavigate } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
 import styles from "./CaseList.module.css";
 
-function CaseList() {
+type Props = {
+  isMyCases?: boolean;
+};
+
+function CaseList({ isMyCases }: Props) {
   const [cases, setCases] = useState<any[]>([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchCases = async () => {
-      try {
+useEffect(() => {
+  const fetchCases = async () => {
+    try {
+      if (isMyCases) {
+        const res = await fetch("http://localhost:8080/cases/my", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const data = await res.json();
+        setCases(data);
+      } else {
         const res = await getCases();
         setCases(res.data);
-      } catch (err) {
-        console.error(err);
       }
-    };
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-    fetchCases();
-  }, []);
+  fetchCases();
+}, [isMyCases]);
 
   return (
     <Layout>
       <div className={styles.container}>
         
         <div className={styles.header}>
-          <h2>Ärenden</h2>
+          <h2>{isMyCases ? "Mina ärenden" : "Ärenden"}</h2>
         </div>
 
         <div className={styles.table}>

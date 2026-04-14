@@ -1,76 +1,53 @@
 import { useEffect, useState } from "react";
-import { getCases } from "../../api/caseApi";
+import { useAuth } from "../../context/authContext";
 import Layout from "../../components/layout/Layout";
 import styles from "./Dashboard.module.css";
 
 function Dashboard() {
-  const [cases, setCases] = useState<any[]>([]);
+const { token, role } = useAuth();
+const [data, setData] = useState<any>(null);
 
-  const user = {
-    name: localStorage.getItem("username") || "Admin",
-    email: localStorage.getItem("email") || "admin@mail.com",
-    role: localStorage.getItem("role"),
-  };
 
-  useEffect(() => {
-    getCases().then(res => setCases(res.data));
-  }, []);
+useEffect(() => {
+  fetch("http://localhost:8080/cases/dashboard", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then(res => res.json())
+    .then(setData);
+}, [token]);
 
-  const total = cases.length;
-  const approved = cases.filter(c => c.status === "APPROVED").length;
-  const rejected = cases.filter(c => c.status === "REJECTED").length;
-  const submitted = cases.filter(c => c.status === "SUBMITTED").length;
+if (!data) return <Layout><p>Laddar...</p></Layout>;
 
-  return (
-    <Layout>
-      <div className={styles.dashboard}>
+return (
+  <Layout>
+    <div className={styles.dashboard}>
 
-        <h2>Välkommen tillbaka {user.name}</h2>
+      <h2>Dashboard</h2>
 
-        <div className={styles.grid}>
-
-          <div className={styles.main}>
-
-            <div className={styles.cards}>
-              <div className={styles.card}>
-                <p>Total</p>
-                <h3>{total}</h3>
-              </div>
-
-              <div className={styles.card}>
-                <p>Submitted</p>
-                <h3>{submitted}</h3>
-              </div>
-
-              <div className={styles.card}>
-                <p>Approved</p>
-                <h3>{approved}</h3>
-              </div>
-
-              <div className={styles.card}>
-                <p>Rejected</p>
-                <h3>{rejected}</h3>
-              </div>
+      {role === "MANAGER" && (
+        <div>
+          <h3>Admins statistik</h3>
+          {data.admins?.map((admin: any) => (
+            <div key={admin.userId}>
+              <p>Admin ID: {admin.userId}</p>
+              <p>Ärenden: {admin.totalCases}</p>
             </div>
-
-          </div>
-
-          <div className={styles.sidebar}>
-            <h3>Profil</h3>
-
-            <div className={styles.profileCard}>
-              <p><strong>{user.name}</strong></p>
-              <p>{user.email}</p>
-              <p>{user.role}</p>
-            </div>
-
-          </div>
-
+          ))}
         </div>
+      )}
 
-      </div>
-    </Layout>
-  );
+      {role === "ADMIN" && (
+        <div>
+          <h3>Min statistik</h3>
+          <p>Ärenden: {data.totalCases}</p>
+        </div>
+      )}
+
+    </div>
+  </Layout>
+);
 }
 
 export default Dashboard;

@@ -8,6 +8,7 @@ import logoutIcon from "../../assets/Logout.svg";
 import loginIcon from "../../assets/Logga in.svg";
 import { useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../../context/authContext";
 
 type LayoutProps = {
   children: ReactNode;
@@ -16,7 +17,7 @@ type LayoutProps = {
 const Layout = ({ children }: LayoutProps) => {
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("token");
+  const { token, role } = useAuth();
   const isLoggedIn = !!token;
 
   const handleAuthClick = () => {
@@ -31,51 +32,71 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <div className={styles.page}>
       <div className={styles.app}>
-        
+
         <aside className={styles.sidebar}>
           <h2 className={styles.logo}>CaseManagement</h2>
 
-{!isLoggedIn && (
-  <p className={styles.loginHint}>
-    Logga in för att se innehåll
-  </p>
-)}
+          {!isLoggedIn && (
+            <p className={styles.loginHint}>
+              Logga in för att se innehåll
+            </p>
+          )}
 
-{isLoggedIn && (
-  <nav className={styles.nav}>
-    
-    <NavLink
-      to="/dashboard"
-      className={({ isActive }) =>
-        isActive ? `${styles.navItem} ${styles.active}` : styles.navItem
-      }
-    >
-      <img src={dashboardIcon} alt="dashboard" />
-      <span>Dashboard</span>
-    </NavLink>
+          {isLoggedIn && (
+            <nav className={styles.nav}>
 
-    <NavLink
-      to="/"
-      className={({ isActive }) =>
-        isActive ? `${styles.navItem} ${styles.active}` : styles.navItem
-      }
-    >
-      <img src={casesIcon} alt="ärenden" />
-      <span>Ärenden</span>
-    </NavLink>
+              {(role === "ADMIN" || role === "MANAGER") && (
+                <NavLink
+                  to="/dashboard"
+                  className={({ isActive }) =>
+                    isActive ? `${styles.navItem} ${styles.active}` : styles.navItem
+                  }
+                >
+                  <img src={dashboardIcon} alt="dashboard" />
+                  <span>Dashboard</span>
+                </NavLink>
+              )}
 
-    <NavLink
-      to="/create"
-      className={({ isActive }) =>
-        isActive ? `${styles.navItem} ${styles.active}` : styles.navItem
-      }
-    >
-      <img src={createIcon} alt="skapa ärende" />
-      <span>Skapa ärende</span>
-    </NavLink>
+              {/* ADMIN + MANAGER */}
+              {(role === "ADMIN" || role === "MANAGER") && (
+                <NavLink
+                  to="/"
+                  className={({ isActive }) =>
+                    isActive ? `${styles.navItem} ${styles.active}` : styles.navItem
+                  }
+                >
+                  <img src={casesIcon} alt="ärenden" />
+                  <span>Ärenden</span>
+                </NavLink>
+              )}
 
-  </nav>
-)}
+              {/* USER */}
+              {role === "USER" && (
+                <NavLink
+                  to="/my-cases"
+                  className={({ isActive }) =>
+                    isActive ? `${styles.navItem} ${styles.active}` : styles.navItem
+                  }
+                >
+                  <img src={casesIcon} alt="mina ärenden" />
+                  <span>Mina ärenden</span>
+                </NavLink>
+              )}
+
+              {role && role === "USER" && (
+                <NavLink
+                  to="/create"
+                  className={({ isActive }) =>
+                    isActive ? `${styles.navItem} ${styles.active}` : styles.navItem
+                  }
+                >
+                  <img src={createIcon} alt="create" />
+                  <span>Skapa ärende</span>
+                </NavLink>
+              )}
+
+            </nav>
+          )}
 
           <div className={styles.logout} onClick={handleAuthClick}>
             <img src={isLoggedIn ? logoutIcon : loginIcon} alt="auth" />

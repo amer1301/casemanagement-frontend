@@ -19,7 +19,7 @@ function Header() {
   if (!isLoggedIn) return null;
 
   const requestAdmin = async () => {
-    
+
     try {
       setLoading(true);
 
@@ -75,7 +75,7 @@ function Header() {
               <span className={styles.role}>{role}</span>
             </div>
 
-            {role !== "ADMIN" && (
+            {role === "USER" && (
               <button
                 className={styles.adminButton}
                 onClick={() => setShowModal(true)}
