@@ -71,7 +71,7 @@ useEffect(() => {
                 </span>
 
                 <span>
-                  {c.assignedTo?.username || "Ej tilldelad"}
+                  {c.assignedTo?.split("@")[0] || "Ej hanterad"}
                 </span>
 
                 <span
