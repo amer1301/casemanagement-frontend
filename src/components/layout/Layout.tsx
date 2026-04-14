@@ -7,6 +7,7 @@ import createIcon from "../../assets/Skapa ärenden.svg";
 import logoutIcon from "../../assets/Logout.svg";
 import loginIcon from "../../assets/Logga in.svg";
 import { useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 type LayoutProps = {
   children: ReactNode;
@@ -40,22 +41,39 @@ const Layout = ({ children }: LayoutProps) => {
   </p>
 )}
 
-          {isLoggedIn && (
+{isLoggedIn && (
   <nav className={styles.nav}>
-    <div className={styles.navItem} onClick={() => navigate("/dashboard")}>
+    
+    <NavLink
+      to="/dashboard"
+      className={({ isActive }) =>
+        isActive ? `${styles.navItem} ${styles.active}` : styles.navItem
+      }
+    >
       <img src={dashboardIcon} alt="dashboard" />
       <span>Dashboard</span>
-    </div>
+    </NavLink>
 
-    <div className={styles.navItem} onClick={() => navigate("/")}>
+    <NavLink
+      to="/"
+      className={({ isActive }) =>
+        isActive ? `${styles.navItem} ${styles.active}` : styles.navItem
+      }
+    >
       <img src={casesIcon} alt="ärenden" />
       <span>Ärenden</span>
-    </div>
+    </NavLink>
 
-    <div className={styles.navItem} onClick={() => navigate("/create")}>
+    <NavLink
+      to="/create"
+      className={({ isActive }) =>
+        isActive ? `${styles.navItem} ${styles.active}` : styles.navItem
+      }
+    >
       <img src={createIcon} alt="skapa ärende" />
       <span>Skapa ärende</span>
-    </div>
+    </NavLink>
+
   </nav>
 )}
 

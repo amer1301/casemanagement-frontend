@@ -7,14 +7,19 @@ import styles from "./CreateCase.module.css";
 function CreateCasePage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
     try {
+      setLoading(true);
       await createCase({ title, description });
       navigate("/");
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -38,8 +43,12 @@ function CreateCasePage() {
             onChange={(e) => setDescription(e.target.value)}
           />
 
-          <button className={styles.button} onClick={handleSubmit}>
-            Skicka
+          <button
+            className={styles.buttonSend}
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? "Skickar..." : "Skicka"}
           </button>
         </div>
       </div>

@@ -13,7 +13,8 @@ API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
 
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    config.headers = config.headers ?? {};
+    (config.headers as any).Authorization = `Bearer ${token}`;
   }
 
   return config;
@@ -50,8 +51,11 @@ export const getCaseLogs = (id: string) =>
   API.get(`/cases/${id}/logs`);
 
 // Uppdatera status
-export const updateCaseStatus = (id: string, status: string) =>
-  API.patch(`/cases/${id}/status`, { status });
+export const updateCaseStatus = (id: string, status: string) => {
+  return API.patch(`/cases/${id}/status`, {
+    status: status,
+  });
+};
 
 // Skapa ärende
 export const createCase = (data: any) =>

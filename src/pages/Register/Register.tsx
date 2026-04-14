@@ -10,23 +10,29 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const navigate = useNavigate();
 
-  const handleRegister = async () => {
-    try {
-      await axios.post("http://localhost:8080/api/auth/register", {
-        name,
-        email,
-        password,
-      });
+const handleRegister = async () => {
+  try {
+    await axios.post("http://localhost:8080/api/auth/register", {
+      name,
+      email,
+      password,
+    });
 
+    setSuccess("Registrering lyckades!");
+
+    setTimeout(() => {
       navigate("/login");
-    } catch (err: any) {
-      console.error(err);
-      setError("Registrering misslyckades");
-    }
-  };
+    }, 2000);
+
+  } catch (err: any) {
+    console.error(err);
+    setError("Registrering misslyckades");
+  }
+};
 
   return (
     <Layout>
@@ -57,6 +63,7 @@ function Register() {
         />
 
         <button onClick={handleRegister}>Registrera</button>
+        {success && <div className={styles.toast}>{success}</div>}
 
         {error && <p className={styles.error}>{error}</p>}
       </div>

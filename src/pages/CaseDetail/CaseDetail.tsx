@@ -18,37 +18,42 @@ function CaseDetail() {
   const [logs, setLogs] = useState<Log[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const caseRes = await getCaseById(id!);
-        const logsRes = await getCaseLogs(id!);
+useEffect(() => {
+  if (!id) return;
 
-        setCaseData(caseRes.data);
-        setLogs(logsRes.data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [id]);
-
-  const handleStatus = async (status: string) => {
+  const fetchData = async () => {
     try {
-      await updateCaseStatus(id!, status);
+      const caseRes = await getCaseById(id);
+      const logsRes = await getCaseLogs(id);
 
-      const updated = await getCaseById(id!);
-      setCaseData(updated.data);
-
-      const updatedLogs = await getCaseLogs(id!);
-      setLogs(updatedLogs.data);
+      setCaseData(caseRes.data);
+      setLogs(logsRes.data);
     } catch (err) {
-      console.error("ERROR:", err);
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
+
+  fetchData();
+}, [id]);
+
+const handleStatus = async (status: string) => {
+  if (!id) return;
+
+  try {
+    await updateCaseStatus(id, status);
+
+    const updated = await getCaseById(id);
+    setCaseData(updated.data);
+
+    const updatedLogs = await getCaseLogs(id);
+    setLogs(updatedLogs.data);
+
+  } catch (err) {
+    console.error("ERROR:", err);
+  }
+};
 
   if (loading) return <p>Laddar...</p>;
   if (!caseData) return <p>Kunde inte hämta ärendet</p>;
@@ -61,7 +66,7 @@ function CaseDetail() {
         
         {/* VÄNSTER */}
         <div className={styles.caseMain}>
-          <h1>{caseData.title}</h1>
+          <h1 className={styles.title}>{caseData.title}</h1>
           <p className={styles.description}>
             {caseData.description}
           </p>
@@ -104,15 +109,15 @@ function CaseDetail() {
           <h3>Historik</h3>
 
           {logs.length === 0 ? (
-            <p>Ingen historik</p>
-          ) : (
+  <p className={styles.empty}>Ingen historik</p>
+) : (
             logs.map((log) => (
               <div key={log.id} className={styles.logItem}>
-                <p>{log.message}</p>
+                <p>{log.action}</p>
                 <small>
                   {log.user?.username}{" "}
-                  {log.createdAt
-                    ? new Date(log.createdAt).toLocaleString()
+                  {log.timestamp
+                    ? new Date(log.timestamp).toLocaleString()
                     : "Okänt datum"}
                 </small>
               </div>

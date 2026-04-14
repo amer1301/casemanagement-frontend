@@ -59,3 +59,27 @@
   background: rgba(239,68,68,0.2);
   color: #f87171;
 }
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.actions button {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #A9A9F4;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.actions button:hover {
+  background: #A9A9F4;
+  color: black;
+}
+
+.empty {
+  color: white;
+}

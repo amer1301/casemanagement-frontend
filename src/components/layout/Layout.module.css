@@ -118,9 +118,28 @@
   border-radius: 5px;
   padding-left: 1em;
 }
-
-
 .navItem img {
   width: 18px;
   height: 18px;
+  filter: brightness(0) invert(1);
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: 0.2s;
+
+  color: #9ca3af;
+  text-decoration: none;
+}
+
+.active {
+  background: rgba(255,255,255,0.10);
+  border-radius: 5px;
+  padding-left: 1em;
+  color: white;
 }

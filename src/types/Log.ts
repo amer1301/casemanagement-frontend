@@ -1,7 +1,7 @@
 export interface Log {
   id: number;
-  message: string;
-  createdAt: string;
+  action: string;
+  timestamp: string;
   user: {
     username: string;
   };
