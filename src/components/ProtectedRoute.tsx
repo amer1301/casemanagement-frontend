@@ -1,23 +1,28 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 
+type Role = "USER" | "ADMIN" | "MANAGER";
+
 type Props = {
-  children: React.ReactNode;
-  allowedRoles?: ("USER" | "ADMIN" | "MANAGER")[];
+    children: React.ReactNode;
+    allowedRoles?: Role[];
 };
 
 function ProtectedRoute({ children, allowedRoles }: Props) {
-  const { token, role } = useAuth();
+    const { token, role } = useAuth();
 
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
+    // Ej inloggad
+    if (!token) {
+        return <Navigate to="/login" replace />;
+    }
 
-  if (allowedRoles && (!role || !allowedRoles.includes(role))) {
-    return <Navigate to="/" replace />;
-  }
+    // Roll saknas eller ej tillåten
+    if (allowedRoles && (!role || !allowedRoles.includes(role))) {
+        return <Navigate to="/" replace />;
+    }
 
-  return <>{children}</>;
+    // Tillåten
+    return <>{children}</>;
 }
 
 export default ProtectedRoute;

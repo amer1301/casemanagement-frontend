@@ -10,6 +10,7 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+// Decode JWT
 function parseJwt(token: string): any {
     try {
         return JSON.parse(atob(token.split(".")[1]));
@@ -18,20 +19,24 @@ function parseJwt(token: string): any {
     }
 }
 
-export function AuthProvider({ children }: any) {
-    const [token, setTokenState] = useState<string | null>(localStorage.getItem("token"));
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+    const [token, setTokenState] = useState<string | null>(
+        localStorage.getItem("token")
+    );
+
     const [role, setRole] = useState<Role | null>(null);
 
+    // Uppdatera roll när token ändras
     useEffect(() => {
         if (token) {
             const decoded = parseJwt(token);
-
             setRole(decoded?.role ?? null);
         } else {
             setRole(null);
         }
     }, [token]);
 
+    // Hantera token + localStorage
     const setToken = (newToken: string | null) => {
         if (newToken) {
             localStorage.setItem("token", newToken);
@@ -48,8 +53,11 @@ export function AuthProvider({ children }: any) {
     );
 }
 
+// Hook
 export const useAuth = () => {
     const context = useContext(AuthContext);
-    if (!context) throw new Error("useAuth must be used within AuthProvider");
+    if (!context) {
+        throw new Error("useAuth must be used within AuthProvider");
+    }
     return context;
 };
