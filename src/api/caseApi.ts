@@ -45,9 +45,14 @@ export const getCaseById = (id: string) =>
 export const getCaseLogs = (id: string) =>
   API.get(`/cases/${id}/logs`);
 
-export const updateCaseStatus = (id: string, status: string) => {
+export const updateCaseStatus = (
+  id: string,
+  status: string,
+  reason?: string
+) => {
   return API.patch(`/cases/${id}/status`, {
-    status: status,
+    status,
+    reason,
   });
 };
 

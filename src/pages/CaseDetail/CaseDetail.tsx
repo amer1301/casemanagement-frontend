@@ -20,6 +20,8 @@ function CaseDetail() {
   const [caseData, setCaseData] = useState<Case | null>(null);
   const [logs, setLogs] = useState<Log[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showRejectModal, setShowRejectModal] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
 
   useEffect(() => {
     if (!id) return;
@@ -47,6 +49,11 @@ function CaseDetail() {
   const handleStatus = async (status: string) => {
     if (!id) return;
 
+    if (status === "REJECTED") {
+      setShowRejectModal(true);
+      return;
+    }
+
     try {
       await updateCaseStatus(id, status);
 
@@ -55,8 +62,29 @@ function CaseDetail() {
 
       const updatedLogs = await getCaseLogs(id);
       setLogs(updatedLogs.data);
+
     } catch (err) {
-      console.error("ERROR:", err);
+      console.error(err);
+    }
+  };
+
+  const submitReject = async () => {
+    if (!rejectReason.trim()) return;
+
+    try {
+      await updateCaseStatus(id!, "REJECTED", rejectReason);
+
+      setShowRejectModal(false);
+      setRejectReason("");
+
+      const updated = await getCaseById(id!);
+      setCaseData(updated.data);
+
+      const updatedLogs = await getCaseLogs(id!);
+      setLogs(updatedLogs.data);
+
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -92,24 +120,27 @@ function CaseDetail() {
           </p>
 
           <div className={styles.statusBox}>
+
             <div className={styles.statusRow}>
               <h3>Status</h3>
 
               <span
-                className={`${styles.badge} ${styles[caseData.status.toLowerCase()]
-                  }`}
+                className={`${styles.badge} ${styles[caseData.status.toLowerCase()]}`}
               >
                 {caseData.status}
               </span>
             </div>
+            {caseData.rejectionReason && (
+              <div className={styles.rejectionBox}>
+                <h4>Avslagsmotivering</h4>
+                <p>{caseData.rejectionReason}</p>
+              </div>
+            )}
           </div>
 
-          {/* NYTT: Visa tilldelad admin */}
           <div className={styles.assignedBox}>
             <h3>Handläggare</h3>
-            <p>
-              {caseData.assignedToName || "Ej hanterad"}
-            </p>
+            <p>{caseData.assignedToName || "Ej hanterad"}</p>
           </div>
         </div>
 
@@ -117,17 +148,12 @@ function CaseDetail() {
         <div className={styles.caseSidebar}>
           <h3>Åtgärder</h3>
 
-          {/* ADMIN kan ta ärende */}
           {role === "ADMIN" && !caseData.assignedToName && (
-            <button
-              className={styles.assign}
-              onClick={handleAssign}
-            >
+            <button className={styles.assign} onClick={handleAssign}>
               Ta ärende
             </button>
           )}
 
-          {/* ADMIN kan ändra status */}
           {role === "ADMIN" && (
             <>
               <button
@@ -164,8 +190,36 @@ function CaseDetail() {
             ))
           )}
         </div>
-
       </div>
+
+      {/* 🔥 MODAL SKA LIGGA HÄR (UTANFÖR SIDEBAR) */}
+      {showRejectModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <h3>Avslå ärende</h3>
+
+            <textarea
+              placeholder="Skriv anledning..."
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+            />
+
+            <div className={styles.modalActions}>
+              <button onClick={() => setShowRejectModal(false)}>
+                Avbryt
+              </button>
+
+              <button
+                onClick={submitReject}
+                disabled={!rejectReason.trim()}
+              >
+                Skicka
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </Layout>
   );
 }

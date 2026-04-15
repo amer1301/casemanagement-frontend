@@ -5,4 +5,5 @@ export type Case = {
     status: string;
     createdAt: string;
     assignedToName?: string;
+    rejectionReason?: string;
 };
