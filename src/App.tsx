@@ -14,20 +14,17 @@ function App() {
     <Router>
       <Routes>
 
-        {/* LOGIN */}
         <Route path="/login" element={<Login />} />
 
-        {/* CASE LIST (admin/manager) */}
         <Route
           path="/"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["ADMIN", "MANAGER"]}>
               <CaseList />
             </ProtectedRoute>
           }
         />
 
-        {/* USER – MINA ÄRENDEN */}
         <Route
           path="/my-cases"
           element={
@@ -37,7 +34,6 @@ function App() {
           }
         />
 
-        {/* CASE DETAIL */}
         <Route
           path="/cases/:id"
           element={
@@ -47,7 +43,6 @@ function App() {
           }
         />
 
-        {/* CREATE */}
         <Route
           path="/create"
           element={
@@ -57,7 +52,6 @@ function App() {
           }
         />
 
-        {/* DASHBOARD */}
         <Route
           path="/dashboard"
           element={
@@ -67,7 +61,6 @@ function App() {
           }
         />
 
-        {/* REGISTER */}
         <Route path="/register" element={<Register />} />
 
       </Routes>
