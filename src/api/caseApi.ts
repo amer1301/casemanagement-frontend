@@ -59,4 +59,7 @@ export const getDashboard = () => API.get("/cases/dashboard");
 export const assignCase = (id: string) =>
   API.patch(`/cases/${id}/assign`);
 
+export const getAdminStats = () =>
+  API.get("/cases/dashboard/admins");
+
 export default API;

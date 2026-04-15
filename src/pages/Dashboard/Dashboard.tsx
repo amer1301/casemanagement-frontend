@@ -1,25 +1,35 @@
 import { useEffect, useState } from "react";
-import { getDashboard } from "../../api/caseApi";
+import { getDashboard, getAdminStats } from "../../api/caseApi";
 import Layout from "../../components/layout/Layout";
 import styles from "./Dashboard.module.css";
 import { useAuth } from "../../context/authContext";
+import type { AdminStat } from "../../types/AdminStat";
 
 function Dashboard() {
   const [stats, setStats] = useState<any>(null);
-const { role } = useAuth();
+  const [adminStats, setAdminStats] = useState<AdminStat[]>([]);
+
+  const { role } = useAuth();
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
         const res = await getDashboard();
         setStats(res.data);
+
+        // Bara manager hämtar admin-data
+        if (role === "MANAGER") {
+          const adminRes = await getAdminStats();
+          setAdminStats(adminRes.data);
+        }
+
       } catch (err) {
         console.error(err);
       }
     };
 
     fetchStats();
-  }, []);
+  }, [role]);
 
   if (!stats) return <p>Laddar...</p>;
 
@@ -27,21 +37,23 @@ const { role } = useAuth();
     <Layout>
       <div className={styles.dashboard}>
         
+        {/* HEADER */}
         <div className={styles.header}>
           <h2>Dashboard</h2>
           <p>
-  {role === "MANAGER"
-    ? "Översikt (alla admins)"
-    : "Min statistik"}
-</p>
+            {role === "MANAGER"
+              ? "Översikt (alla admins)"
+              : "Min statistik"}
+          </p>
         </div>
 
         <div className={styles.grid}>
           
           {/* LEFT */}
           <div>
-            <div className={styles.cards}>
 
+            {/* CARDS */}
+            <div className={styles.cards}>
               <div className={styles.card}>
                 <h3>{stats.total}</h3>
                 <p>Totala ärenden</p>
@@ -65,8 +77,24 @@ const { role } = useAuth();
                 </h3>
                 <p>Slutförda</p>
               </div>
-
             </div>
+
+            {/* ADMIN LISTA (bara för manager) */}
+            {role === "MANAGER" && (
+              <div className={styles.adminList}>
+                <h3>Admins</h3>
+
+                {adminStats.map((admin, index) => (
+                  <div key={index} className={styles.adminRow}>
+                    <span>{admin.name}</span>
+                    <span>{admin.total} ärenden</span>
+                    <span>{admin.handled} hanterade</span>
+                    <span>{admin.pending} pending</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
           </div>
 
           {/* RIGHT SIDEBAR */}
