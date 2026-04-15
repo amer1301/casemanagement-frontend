@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
 import styles from "./Login.module.css";
 import heroImg from "../../assets/Hero Startsida.png";
+import { useAuth } from "../../context/authContext";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -11,9 +12,11 @@ function Login() {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+  const { setAuth } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
 
     try {
       const res = await axios.post<{
@@ -26,15 +29,17 @@ function Login() {
         password,
       });
 
-      const token = res.data.token;
-      const role = res.data.role;
-      const userEmail = res.data.email;   // ✅ renamed
-      const name = res.data.name;
+      const { token, email: userEmail, name } = res.data;
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("role", role);
-      localStorage.setItem("email", userEmail);
-      localStorage.setItem("name", name);
+      if (!token) {
+        throw new Error("No token received");
+      }
+
+      setAuth({
+        token,
+        email: userEmail,
+        name,
+      });
 
       navigate("/");
 
@@ -60,6 +65,7 @@ function Login() {
             placeholder="E-post"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
 
           <input
@@ -67,10 +73,11 @@ function Login() {
             placeholder="Lösenord"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
 
           <div className={styles.buttonGroup}>
-            <button type="submit">Logga in</button> {/* ✅ FIX */}
+            <button type="submit">Logga in</button>
 
             <button
               type="button"

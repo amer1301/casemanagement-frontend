@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useAuth } from "../../context/authContext";
 import {
   getCaseById,
   getCaseLogs,
@@ -13,6 +14,7 @@ import styles from "./CaseDetail.module.css";
 
 function CaseDetail() {
   const { id } = useParams();
+  const { role } = useAuth();
 
   const [caseData, setCaseData] = useState<Case | null>(null);
   const [logs, setLogs] = useState<Log[]>([]);
@@ -57,8 +59,6 @@ const handleStatus = async (status: string) => {
 
   if (loading) return <p>Laddar...</p>;
   if (!caseData) return <p>Kunde inte hämta ärendet</p>;
-
-  const role = localStorage.getItem("role");
 
   return (
     <Layout>

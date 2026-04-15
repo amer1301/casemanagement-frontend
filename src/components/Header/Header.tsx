@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import styles from "./Header.module.css";
 import profileImg from "../../assets/Profilbild Default.png";
+import { useAuth } from "../../context/authContext";
 
 function Header() {
   const [open, setOpen] = useState(false);
@@ -9,12 +10,9 @@ function Header() {
   const [toast, setToast] = useState("");
   const [showModal, setShowModal] = useState(false);
 
-  const name = localStorage.getItem("name");
-  const email = localStorage.getItem("email");
-  const role = localStorage.getItem("role");
-  const token = localStorage.getItem("token");
+const { name, email, role, token } = useAuth();
 
-  const isLoggedIn = !!token;
+const isLoggedIn = !!token;
 
   if (!isLoggedIn) return null;
 
