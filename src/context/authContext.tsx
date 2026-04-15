@@ -100,16 +100,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setName(name);
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("email");
-    localStorage.removeItem("name");
+const logout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("email");
+  localStorage.removeItem("name");
 
-    setToken(null);
-    setRole(null);
-    setEmail(null);
-    setName(null);
-  };
+  setToken(null);
+  setRole(null);
+  setEmail(null);
+  setName(null);
+
+  window.location.href = "/login";
+};
 
   return (
     <AuthContext.Provider

@@ -5,6 +5,7 @@ import {
   getCaseById,
   getCaseLogs,
   updateCaseStatus,
+  assignCase,
 } from "../../api/caseApi";
 
 import type { Case } from "../../types/Case";
@@ -20,42 +21,60 @@ function CaseDetail() {
   const [logs, setLogs] = useState<Log[]>([]);
   const [loading, setLoading] = useState(true);
 
-useEffect(() => {
-  if (!id) return;
+  useEffect(() => {
+    if (!id) return;
 
-  const fetchData = async () => {
+    const fetchData = async () => {
+      try {
+        const caseRes = await getCaseById(id);
+        const logsRes = await getCaseLogs(id);
+
+        setCaseData(caseRes.data);
+        setLogs(logsRes.data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  // ====================
+  // STATUS UPDATE
+  // ====================
+  const handleStatus = async (status: string) => {
+    if (!id) return;
+
     try {
-      const caseRes = await getCaseById(id);
-      const logsRes = await getCaseLogs(id);
+      await updateCaseStatus(id, status);
 
-      setCaseData(caseRes.data);
-      setLogs(logsRes.data);
+      const updated = await getCaseById(id);
+      setCaseData(updated.data);
+
+      const updatedLogs = await getCaseLogs(id);
+      setLogs(updatedLogs.data);
     } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
+      console.error("ERROR:", err);
     }
   };
 
-  fetchData();
-}, [id]);
+  // ====================
+  // ASSIGN TO ADMIN
+  // ====================
+  const handleAssign = async () => {
+    if (!id) return;
 
-const handleStatus = async (status: string) => {
-  if (!id) return;
+    try {
+      await assignCase(id);
 
-  try {
-    await updateCaseStatus(id, status);
-
-    const updated = await getCaseById(id);
-    setCaseData(updated.data);
-
-    const updatedLogs = await getCaseLogs(id);
-    setLogs(updatedLogs.data);
-
-  } catch (err) {
-    console.error("ERROR:", err);
-  }
-};
+      const updated = await getCaseById(id);
+      setCaseData(updated.data);
+    } catch (err) {
+      console.error("Assign error:", err);
+    }
+  };
 
   if (loading) return <p>Laddar...</p>;
   if (!caseData) return <p>Kunde inte hämta ärendet</p>;
@@ -63,24 +82,34 @@ const handleStatus = async (status: string) => {
   return (
     <Layout>
       <div className={styles.caseDetail}>
-        
+
         {/* VÄNSTER */}
         <div className={styles.caseMain}>
           <h1 className={styles.title}>{caseData.title}</h1>
+
           <p className={styles.description}>
             {caseData.description}
           </p>
 
           <div className={styles.statusBox}>
-            <h3>Status</h3>
+            <div className={styles.statusRow}>
+              <h3>Status</h3>
 
-            <span
-              className={`${styles.badge} ${
-                styles[caseData.status.toLowerCase()]
-              }`}
-            >
-              {caseData.status}
-            </span>
+              <span
+                className={`${styles.badge} ${styles[caseData.status.toLowerCase()]
+                  }`}
+              >
+                {caseData.status}
+              </span>
+            </div>
+          </div>
+
+          {/* NYTT: Visa tilldelad admin */}
+          <div className={styles.assignedBox}>
+            <h3>Handläggare</h3>
+            <p>
+              {caseData.assignedToName || "Ej hanterad"}
+            </p>
           </div>
         </div>
 
@@ -88,6 +117,17 @@ const handleStatus = async (status: string) => {
         <div className={styles.caseSidebar}>
           <h3>Åtgärder</h3>
 
+          {/* ADMIN kan ta ärende */}
+          {role === "ADMIN" && !caseData.assignedToName && (
+            <button
+              className={styles.assign}
+              onClick={handleAssign}
+            >
+              Ta ärende
+            </button>
+          )}
+
+          {/* ADMIN kan ändra status */}
           {role === "ADMIN" && (
             <>
               <button
@@ -109,8 +149,8 @@ const handleStatus = async (status: string) => {
           <h3>Historik</h3>
 
           {logs.length === 0 ? (
-  <p className={styles.empty}>Ingen historik</p>
-) : (
+            <p className={styles.empty}>Ingen historik</p>
+          ) : (
             logs.map((log) => (
               <div key={log.id} className={styles.logItem}>
                 <p>{log.action}</p>

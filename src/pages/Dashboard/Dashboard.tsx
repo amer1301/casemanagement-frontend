@@ -1,53 +1,89 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../../context/authContext";
+import { getDashboard } from "../../api/caseApi";
 import Layout from "../../components/layout/Layout";
 import styles from "./Dashboard.module.css";
+import { useAuth } from "../../context/authContext";
 
 function Dashboard() {
-const { token, role } = useAuth();
-const [data, setData] = useState<any>(null);
+  const [stats, setStats] = useState<any>(null);
+const { role } = useAuth();
 
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await getDashboard();
+        setStats(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
-useEffect(() => {
-  fetch("http://localhost:8080/cases/dashboard", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-    .then(res => res.json())
-    .then(setData);
-}, [token]);
+    fetchStats();
+  }, []);
 
-if (!data) return <Layout><p>Laddar...</p></Layout>;
+  if (!stats) return <p>Laddar...</p>;
 
-return (
-  <Layout>
-    <div className={styles.dashboard}>
+  return (
+    <Layout>
+      <div className={styles.dashboard}>
+        
+        <div className={styles.header}>
+          <h2>Dashboard</h2>
+          <p>
+  {role === "MANAGER"
+    ? "Översikt (alla admins)"
+    : "Min statistik"}
+</p>
+        </div>
 
-      <h2>Dashboard</h2>
+        <div className={styles.grid}>
+          
+          {/* LEFT */}
+          <div>
+            <div className={styles.cards}>
 
-      {role === "MANAGER" && (
-        <div>
-          <h3>Admins statistik</h3>
-          {data.admins?.map((admin: any) => (
-            <div key={admin.userId}>
-              <p>Admin ID: {admin.userId}</p>
-              <p>Ärenden: {admin.totalCases}</p>
+              <div className={styles.card}>
+                <h3>{stats.total}</h3>
+                <p>Totala ärenden</p>
+              </div>
+
+              <div className={styles.card}>
+                <h3>{stats.pending}</h3>
+                <p>Ej hanterade</p>
+              </div>
+
+              <div className={styles.card}>
+                <h3>{stats.handled}</h3>
+                <p>Hanterade</p>
+              </div>
+
+              <div className={styles.card}>
+                <h3>
+                  {stats.total > 0
+                    ? Math.round((stats.handled / stats.total) * 100)
+                    : 0}%
+                </h3>
+                <p>Slutförda</p>
+              </div>
+
             </div>
-          ))}
-        </div>
-      )}
+          </div>
 
-      {role === "ADMIN" && (
-        <div>
-          <h3>Min statistik</h3>
-          <p>Ärenden: {data.totalCases}</p>
-        </div>
-      )}
+          {/* RIGHT SIDEBAR */}
+          <div className={styles.sidebar}>
+            <h3>Översikt</h3>
 
-    </div>
-  </Layout>
-);
+            <div className={styles.profileCard}>
+              <p>Totala ärenden: {stats.total}</p>
+              <p>Ej hanterade: {stats.pending}</p>
+              <p>Hanterade: {stats.handled}</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </Layout>
+  );
 }
 
 export default Dashboard;

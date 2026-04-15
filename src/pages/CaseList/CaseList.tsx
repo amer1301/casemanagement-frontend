@@ -67,7 +67,7 @@ if (isMyCases) {
                 </span>
 
                 <span>
-                  {c.assignedTo?.split("@")[0] || "Ej hanterad"}
+                  {c.assignedToName || "Ej hanterad"}
                 </span>
 
                 <span

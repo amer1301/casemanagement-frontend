@@ -1,7 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Layout from "../../components/layout/Layout";
 import styles from "./Login.module.css";
 import heroImg from "../../assets/Hero Startsida.png";
 import { useAuth } from "../../context/authContext";
@@ -41,7 +40,11 @@ function Login() {
         name,
       });
 
-      navigate("/");
+      if (res.data.role === "USER") {
+  navigate("/my-cases");
+} else {
+  navigate("/");
+}
 
     } catch (err) {
       console.error("Login failed", err);
@@ -50,7 +53,7 @@ function Login() {
   };
 
   return (
-    <Layout>
+    <div className={styles.wrapper}>
       <div className={styles.wrapper}>
         
         <div className={styles.hero}>
@@ -91,7 +94,7 @@ function Login() {
         </form>
 
       </div>
-    </Layout>
+    </div>
   );
 }
 

@@ -3,4 +3,6 @@ export type Case = {
     title: string;
     description: string;
     status: string;
+    createdAt: string;
+    assignedToName?: string;
 };

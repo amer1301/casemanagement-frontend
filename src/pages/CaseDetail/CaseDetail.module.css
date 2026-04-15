@@ -6,93 +6,125 @@
 }
 
 .caseMain {
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid #A9A9F4;
-  border-radius: 16px;
-  padding: 32px;
-  backdrop-filter: blur(10px);
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(2, 6, 23, 0.9));
+  border: 1px solid rgba(169, 169, 244, 0.4);
+  border-radius: 18px;
+  padding: 36px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
 .title {
-  font-size: 32px;
-  font-weight: 600;
-  color: #e2e8f0;
-  margin-bottom: 16px;
+  font-size: 34px;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 18px;
+  letter-spacing: 0.5px;
 }
 
 .description {
   color: #94a3b8;
   font-size: 15px;
-  margin-bottom: 30px;
-  line-height: 1.5;
+  margin-bottom: 40px;
+  line-height: 1.6;
+  max-width: 600px;
 }
 
-.statusBox h3 {
+.statusBox,
+.assignedBox {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+
+.statusBox h3,
+.assignedBox h3 {
   color: #94a3b8;
-  margin-bottom: 15px;
-  padding-left: 16px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
 }
 
 .badge {
   display: inline-block;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 13px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 12px;
   font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .submitted {
-  background: rgba(59, 130, 246, 0.2);
+  background: rgba(59, 130, 246, 0.15);
   color: #60a5fa;
 }
 
 .approved {
-  background: rgba(34, 197, 94, 0.2);
+  background: rgba(34, 197, 94, 0.15);
   color: #4ade80;
 }
 
 .rejected {
-  background: rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.15);
   color: #f87171;
 }
 
+.assignedBox p {
+  font-size: 16px;
+  font-weight: 500;
+  color: #e2e8f0;
+}
+
 .caseSidebar {
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid #A9A9F4;
-  border-radius: 16px;
-  padding: 24px;
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(2, 6, 23, 0.9));
+  border: 1px solid rgba(169, 169, 244, 0.4);
+  border-radius: 18px;
+  padding: 26px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
 }
 
 .caseSidebar h3 {
-  color: #e2e8f0;
-  margin-bottom: 16px;
+  color: #f1f5f9;
+  margin-bottom: 18px;
 }
 
 .approve,
-.reject {
+.reject,
+.assign {
   width: 100%;
   padding: 12px;
   border-radius: 12px;
-  border: 1px solid #A9A9F4;
-  background: transparent;
+  border: 1px solid rgba(169, 169, 244, 0.4);
+  background: rgba(255, 255, 255, 0.02);
   color: white;
   cursor: pointer;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   transition: all 0.25s ease;
 }
 
 .approve:hover {
   background: rgba(34, 197, 94, 0.2);
-  box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+  box-shadow: 0 0 18px rgba(34, 197, 94, 0.4);
+  transform: translateY(-1px);
 }
 
 .reject:hover {
   background: rgba(239, 68, 68, 0.2);
-  box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+  box-shadow: 0 0 18px rgba(239, 68, 68, 0.4);
+  transform: translateY(-1px);
+}
+
+.assign:hover {
+  background: rgba(96, 165, 250, 0.2);
+  box-shadow: 0 0 18px rgba(96, 165, 250, 0.4);
+  transform: translateY(-1px);
 }
 
 .logItem {
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
   padding-bottom: 10px;
   margin-bottom: 12px;
 }
@@ -100,10 +132,12 @@
 .logItem p {
   color: #e2e8f0;
   margin-bottom: 4px;
+  font-size: 14px;
 }
 
 .logItem small {
   color: #64748b;
+  font-size: 12px;
 }
 
 .empty {
@@ -111,4 +145,10 @@
   font-size: 14px;
   opacity: 0.8;
   margin-top: 10px;
+}
+
+.statusRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
