@@ -6,7 +6,8 @@ import CaseDetail from "./pages/CaseDetail/CaseDetail";
 import CreateCase from "./pages/CreateCase/CreateCase";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Register from "./pages/Register/Register";
-
+import MyCases from "./pages/MyCases/MyCases";
+import Notifications from "./pages/Notifications/Notifications";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -25,14 +26,23 @@ function App() {
           }
         />
 
-        <Route
-          path="/my-cases"
-          element={
-            <ProtectedRoute allowedRoles={["USER"]}>
-              <CaseList isMyCases />
-            </ProtectedRoute>
-          }
-        />
+<Route
+  path="/my-cases"
+  element={
+    <ProtectedRoute allowedRoles={["ADMIN"]}>
+      <MyCases />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/user/my-cases"
+  element={
+    <ProtectedRoute allowedRoles={["USER"]}>
+      <CaseList isMyCases />
+    </ProtectedRoute>
+  }
+/>
 
         <Route
           path="/cases/:id"
@@ -60,6 +70,15 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+  path="/notifications"
+  element={
+    <ProtectedRoute>
+      <Notifications />
+    </ProtectedRoute>
+  }
+/>
 
         <Route path="/register" element={<Register />} />
 

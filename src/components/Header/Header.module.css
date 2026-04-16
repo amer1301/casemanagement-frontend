@@ -171,6 +171,8 @@
   animation: fadeInUp 0.3s ease;
 }
 
+
+
 @keyframes fadeInUp {
   from {
     opacity: 0;

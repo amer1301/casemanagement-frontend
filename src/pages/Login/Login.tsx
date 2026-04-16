@@ -1,9 +1,9 @@
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styles from "./Login.module.css";
 import heroImg from "../../assets/Hero Startsida.png";
 import { useAuth } from "../../context/authContext";
+import { loginUser } from "../../api/caseApi";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -13,44 +13,39 @@ function Login() {
   const navigate = useNavigate();
   const { setAuth } = useAuth();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
+const handleLogin = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError("");
 
-    try {
-      const res = await axios.post<{
-        token: string;
-        role: string;
-        email: string;
-        name: string;
-      }>("http://localhost:8080/api/auth/login", {
-        email,
-        password,
-      });
+  try {
+    const res = await loginUser({
+      email,
+      password,
+    });
 
-      const { token, email: userEmail, name } = res.data;
+    const { token, role, email: userEmail, name } = res.data;
 
-      if (!token) {
-        throw new Error("No token received");
-      }
-
-      setAuth({
-        token,
-        email: userEmail,
-        name,
-      });
-
-      if (res.data.role === "USER") {
-  navigate("/my-cases");
-} else {
-  navigate("/");
-}
-
-    } catch (err) {
-      console.error("Login failed", err);
-      setError("Fel email eller lösenord");
+    if (!token) {
+      throw new Error("No token received");
     }
-  };
+
+    setAuth({
+      token,
+      email: userEmail,
+      name,
+    });
+
+    if (role === "USER") {
+      navigate("/my-cases");
+    } else {
+      navigate("/");
+    }
+
+  } catch (err) {
+    console.error("Login failed", err);
+    setError("Fel email eller lösenord");
+  }
+};
 
   return (
     <div className={styles.wrapper}>

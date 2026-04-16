@@ -30,6 +30,11 @@
   max-width: 600px;
 }
 
+.appeal {
+  margin-top: 12px;
+  display: inline-block;
+}
+
 .statusBox,
 .assignedBox {
   background: rgba(255, 255, 255, 0.02);
@@ -39,9 +44,16 @@
   margin-bottom: 20px;
 }
 
+.statusBox {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .statusBox h3,
 .assignedBox h3,
-.rejectionBox h4 {
+.rejectionBox h4,
+.notesSection .sectionTitle {
   color: #94a3b8;
   font-size: 13px;
   text-transform: uppercase;
@@ -213,7 +225,8 @@
   gap: 10px;
 }
 
-.modalActions button {
+.modalActions button,
+.appeal {
   padding: 8px 16px;
   border-radius: 10px;
   border: 1px solid #A9A9F4;
@@ -230,4 +243,91 @@
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.notesSection {
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sectionTitle {
+  margin-bottom: 12px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.noteItem {
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.noteText {
+  margin-bottom: 6px;
+  color: #e5e7eb;
+}
+
+.noteMeta {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.noteInputBox {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.3);
+  color: white;
+  resize: vertical;
+  font-size: 14px;
+}
+
+.textarea::placeholder {
+  color: #6b7280;
+}
+
+.saveNote {
+  margin-top: 20px;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #A9A9F4;
+  color: white;
+  cursor: pointer;
+  background: transparent;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+
+.saveNote:hover,
+.appeal:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 10px 25px rgba(37, 99, 235, 0.4),
+    0 0 10px rgba(59, 130, 246, 0.4);
+}
+
+.saveNote:disabled {
+  background: #374151;
+  cursor: not-allowed;
+}
+
+.empty {
+  color: #9ca3af;
+  font-size: 14px;
 }

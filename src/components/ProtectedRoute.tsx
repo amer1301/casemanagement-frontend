@@ -16,10 +16,19 @@ function ProtectedRoute({ children, allowedRoles }: Props) {
         return <Navigate to="/login" replace />;
     }
 
-    // Roll saknas eller ej tillåten
     if (allowedRoles && (!role || !allowedRoles.includes(role))) {
-        return <Navigate to="/" replace />;
+    if (role === "USER") {
+        return <Navigate to="/user/my-cases" replace />;
     }
+    if (role === "ADMIN") {
+        return <Navigate to="/my-cases" replace />;
+    }
+    if (role === "MANAGER") {
+        return <Navigate to="/dashboard" replace />;
+    }
+
+    return <Navigate to="/login" replace />;
+}
 
     // Tillåten
     return <>{children}</>;

@@ -6,4 +6,6 @@ export type Case = {
     createdAt: string;
     assignedToName?: string;
     rejectionReason?: string;
+    appealed?: boolean;
+appealReason?: string;
 };

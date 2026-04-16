@@ -1,8 +1,8 @@
 import { useState } from "react";
-import axios from "axios";
 import styles from "./Header.module.css";
 import profileImg from "../../assets/Profilbild Default.png";
 import { useAuth } from "../../context/authContext";
+import { requestAdminRole } from "../../api/caseApi";
 
 function Header() {
   const [open, setOpen] = useState(false);
@@ -17,33 +17,24 @@ const isLoggedIn = !!token;
   if (!isLoggedIn) return null;
 
   const requestAdmin = async () => {
+  try {
+    setLoading(true);
 
-    try {
-      setLoading(true);
+    await requestAdminRole();
 
-      await axios.post(
-        "http://localhost:8080/cases/request-admin",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    setToast("Begäran skickad!");
+    setShowModal(false);
 
-      setToast("Begäran skickad!");
-      setShowModal(false);
+    setTimeout(() => setToast(""), 2500);
+  } catch (err) {
+    console.error(err);
+    setToast("Något gick fel");
 
-      setTimeout(() => setToast(""), 2500);
-    } catch (err) {
-      console.error(err);
-      setToast("Något gick fel");
-
-      setTimeout(() => setToast(""), 2500);
-    } finally {
-      setLoading(false);
-    }
-  };
+    setTimeout(() => setToast(""), 2500);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className={styles.header}>

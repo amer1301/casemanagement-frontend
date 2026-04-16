@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
-import { getCases,getMyCases } from "../../api/caseApi";
 import { useNavigate } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
 import styles from "./CaseList.module.css";
 import { useAuth } from "../../context/authContext";
+import {
+  getAssignedCases,
+  getUnassignedCases,
+  getCases
+} from "../../api/caseApi";
 
 type Props = {
   isMyCases?: boolean;
@@ -12,25 +16,32 @@ type Props = {
 function CaseList({ isMyCases }: Props) {
   const [cases, setCases] = useState<any[]>([]);
   const navigate = useNavigate();
-  const { token } = useAuth();
+  const { role } = useAuth();
 
 useEffect(() => {
   const fetchCases = async () => {
     try {
-if (isMyCases) {
-  const res = await getMyCases();
-  setCases(res.data);
-} else {
-        const res = await getCases();
-        setCases(res.data);
+      let res;
+
+      if (isMyCases) {
+        if (role === "ADMIN") {
+          res = await getAssignedCases();
+        } else {
+          res = await getCases();
+        }
+      } else {
+        res = await getUnassignedCases();
       }
+
+      setCases(res.data);
+
     } catch (err) {
       console.error(err);
     }
   };
 
   fetchCases();
-}, [isMyCases, token]);
+}, [isMyCases, role]);
 
   return (
     <Layout>

@@ -6,9 +6,12 @@ import casesIcon from "../../assets/Ärenden.svg";
 import createIcon from "../../assets/Skapa ärenden.svg";
 import logoutIcon from "../../assets/Logout.svg";
 import loginIcon from "../../assets/Logga in.svg";
-import { useNavigate } from "react-router-dom";
-import { NavLink } from "react-router-dom";
+import notificationIcon from "../../assets/notification.svg";
+
+import { useNavigate, NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/authContext";
+import { useEffect, useState } from "react";
+import { getUnreadCount } from "../../api/caseApi";
 
 type LayoutProps = {
   children: ReactNode;
@@ -16,9 +19,28 @@ type LayoutProps = {
 
 const Layout = ({ children }: LayoutProps) => {
   const navigate = useNavigate();
-
+  const location = useLocation();
   const { token, role } = useAuth();
   const isLoggedIn = !!token;
+
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // Hämta antal olästa notifikationer
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        const res = await getUnreadCount();
+        setUnreadCount(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    if (token) {
+      fetchUnreadCount();
+    }
+  }, [token, location.pathname]); 
+  // location gör att badge uppdateras när man navigerar
 
   const handleAuthClick = () => {
     if (isLoggedIn) {
@@ -49,7 +71,9 @@ const Layout = ({ children }: LayoutProps) => {
                 <NavLink
                   to="/dashboard"
                   className={({ isActive }) =>
-                    isActive ? `${styles.navItem} ${styles.active}` : styles.navItem
+                    isActive
+                      ? `${styles.navItem} ${styles.active}`
+                      : styles.navItem
                   }
                 >
                   <img src={dashboardIcon} alt="dashboard" />
@@ -57,12 +81,13 @@ const Layout = ({ children }: LayoutProps) => {
                 </NavLink>
               )}
 
-              {/* ADMIN + MANAGER */}
               {(role === "ADMIN" || role === "MANAGER") && (
                 <NavLink
                   to="/"
                   className={({ isActive }) =>
-                    isActive ? `${styles.navItem} ${styles.active}` : styles.navItem
+                    isActive
+                      ? `${styles.navItem} ${styles.active}`
+                      : styles.navItem
                   }
                 >
                   <img src={casesIcon} alt="ärenden" />
@@ -70,12 +95,33 @@ const Layout = ({ children }: LayoutProps) => {
                 </NavLink>
               )}
 
-              {/* USER */}
-              {role === "USER" && (
+              {(role === "USER" || role === "ADMIN") && (
+                <NavLink
+                  to="/notifications"
+                  className={({ isActive }) =>
+                    isActive
+                      ? `${styles.navItem} ${styles.active}`
+                      : styles.navItem
+                  }
+                >
+                  <img src={notificationIcon} alt="notifikationer" />
+                  <span>Notifikationer</span>
+
+                  {unreadCount > 0 && (
+                    <span className={styles.badge}>
+                      {unreadCount}
+                    </span>
+                  )}
+                </NavLink>
+              )}
+
+              {role === "ADMIN" && (
                 <NavLink
                   to="/my-cases"
                   className={({ isActive }) =>
-                    isActive ? `${styles.navItem} ${styles.active}` : styles.navItem
+                    isActive
+                      ? `${styles.navItem} ${styles.active}`
+                      : styles.navItem
                   }
                 >
                   <img src={casesIcon} alt="mina ärenden" />
@@ -83,11 +129,27 @@ const Layout = ({ children }: LayoutProps) => {
                 </NavLink>
               )}
 
-              {role && role === "USER" && (
+              {role === "USER" && (
+                <NavLink
+                  to="/user/my-cases"
+                  className={({ isActive }) =>
+                    isActive
+                      ? `${styles.navItem} ${styles.active}`
+                      : styles.navItem
+                  }
+                >
+                  <img src={casesIcon} alt="mina ärenden" />
+                  <span>Mina ärenden</span>
+                </NavLink>
+              )}
+
+              {role === "USER" && (
                 <NavLink
                   to="/create"
                   className={({ isActive }) =>
-                    isActive ? `${styles.navItem} ${styles.active}` : styles.navItem
+                    isActive
+                      ? `${styles.navItem} ${styles.active}`
+                      : styles.navItem
                   }
                 >
                   <img src={createIcon} alt="create" />
@@ -105,14 +167,13 @@ const Layout = ({ children }: LayoutProps) => {
         </aside>
 
         <div className={styles.main}>
-
           {isLoggedIn && <Header />}
 
           <div className={styles.content}>
             {children}
           </div>
-
         </div>
+
       </div>
     </div>
   );

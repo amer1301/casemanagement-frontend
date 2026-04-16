@@ -52,7 +52,33 @@
 .content {
   flex: 1;
   padding: 30px;
-  overflow-y: hidden;
+  overflow-y: auto; 
+}
+
+.content {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(71, 85, 105, 0.7) transparent;
+}
+
+.content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.content::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    rgba(71, 85, 105, 0.6),
+    rgba(51, 65, 85, 0.8)
+  );
+  border-radius: 10px;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+  background: rgba(71, 85, 105, 0.9);
 }
 
 .page {
@@ -142,4 +168,14 @@
   border-radius: 5px;
   padding-left: 1em;
   color: white;
+}
+
+.badge {
+  margin-left: auto;
+  background: rgba(59,130,246,0.2);
+  border: 1px solid #A9A9F4;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 50%;
 }

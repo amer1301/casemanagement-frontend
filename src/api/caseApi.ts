@@ -32,6 +32,25 @@ API.interceptors.response.use(
 );
 
 // ====================
+// AUTH API
+// ====================
+
+export const registerUser = (data: {
+  name: string;
+  email: string;
+  password: string;
+}) => {
+  return API.post("/api/auth/register", data);
+};
+
+export const loginUser = (data: {
+  email: string;
+  password: string;
+}) => {
+  return API.post("/api/auth/login", data);
+};
+
+// ====================
 // CASE API
 // ====================
 
@@ -45,6 +64,9 @@ export const getCaseById = (id: string) =>
 export const getCaseLogs = (id: string) =>
   API.get(`/cases/${id}/logs`);
 
+export const createCase = (data: any) =>
+  API.post("/cases", data);
+
 export const updateCaseStatus = (
   id: string,
   status: string,
@@ -56,15 +78,49 @@ export const updateCaseStatus = (
   });
 };
 
-export const createCase = (data: any) =>
-  API.post("/cases", data);
-
-export const getDashboard = () => API.get("/cases/dashboard");
-
 export const assignCase = (id: string) =>
   API.patch(`/cases/${id}/assign`);
 
+export const getDashboard = () =>
+  API.get("/cases/dashboard");
+
 export const getAdminStats = () =>
   API.get("/cases/dashboard/admins");
+
+export const getUnassignedCases = () =>
+  API.get("/cases/unassigned");
+
+export const getAssignedCases = () =>
+  API.get("/cases/assigned");
+
+export const appealCase = (id: string, reason: string) =>
+  API.post(`/cases/${id}/appeal`, { reason });
+
+export const requestAdminRole = () =>
+  API.post("/cases/request-admin");
+
+// ====================
+// NOTIFICATIONS API
+// ====================
+
+export const getNotifications = () =>
+  API.get("/notifications");
+
+export const markNotificationsAsRead = () =>
+  API.patch("/notifications/read-all");
+
+export const getUnreadCount = () =>
+  API.get("/notifications/unread-count");
+
+// ====================
+// NOTES API
+// ====================
+
+export const getNotes = (caseId: string) =>
+  API.get(`/cases/${caseId}/notes`);
+
+export const addNote = (caseId: string, text: string) =>
+  API.post(`/cases/${caseId}/notes`, { text });
+
 
 export default API;

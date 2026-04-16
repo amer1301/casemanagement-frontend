@@ -1,9 +1,9 @@
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
 import styles from "./Register.module.css";
 import heroImg from "../../assets/Hero Startsida.png";
+import { registerUser } from "../../api/caseApi";
 
 function Register() {
   const [name, setName] = useState("");
@@ -16,7 +16,7 @@ function Register() {
 
 const handleRegister = async () => {
   try {
-    await axios.post("http://localhost:8080/api/auth/register", {
+    await registerUser({
       name,
       email,
       password,
