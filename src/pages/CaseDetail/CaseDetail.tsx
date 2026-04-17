@@ -16,6 +16,7 @@ import type { Log } from "../../types/Log";
 import Layout from "../../components/layout/Layout";
 import styles from "./CaseDetail.module.css";
 import type { Note } from "../../types/Note";
+import { translateLog } from "../../utils/logTranslations";
 
 function CaseDetail() {
   const { id } = useParams();
@@ -33,11 +34,15 @@ function CaseDetail() {
   const [appealReason, setAppealReason] = useState("");
 
   useEffect(() => {
+    console.log("RENDER CASE DATA:", caseData);
     if (!id) return;
 
     const fetchData = async () => {
       try {
         const caseRes = await getCaseById(id);
+
+        console.log("CASE DATA:", caseRes.data);
+
         const logsRes = await getCaseLogs(id);
         const notesRes = await getNotes(id);
 
@@ -267,7 +272,7 @@ function CaseDetail() {
           ) : (
             logs.map((log) => (
               <div key={log.id} className={styles.logItem}>
-                <p>{log.action}</p>
+                <p>{translateLog(log.action, log.user?.username)}</p>
                 <small>
                   {log.user?.username}{" "}
                   {log.timestamp
