@@ -59,6 +59,9 @@
   border-radius: 16px;
   padding: 20px;
   color: white;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .sidebar h3 {
@@ -87,4 +90,23 @@
   border-radius: 12px;
   padding: 14px 18px;
   color: #e2e8f0;
+}
+
+.downloadBtn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #A9A9F4;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+  margin-top: auto;
+}
+
+.downloadBtn:hover {
+  box-shadow: 
+    0 10px 25px rgba(37, 99, 235, 0.4),
+    0 0 10px rgba(59, 130, 246, 0.4);
 }

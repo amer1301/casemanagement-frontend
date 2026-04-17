@@ -4,6 +4,7 @@ import Layout from "../../components/layout/Layout";
 import styles from "./Dashboard.module.css";
 import { useAuth } from "../../context/authContext";
 import type { AdminStat } from "../../types/AdminStat";
+import { downloadMonthlyReport } from "../../api/caseApi";
 
 function Dashboard() {
   const [stats, setStats] = useState<any>(null);
@@ -106,8 +107,16 @@ function Dashboard() {
               <p>Ej hanterade: {stats.pending}</p>
               <p>Hanterade: {stats.handled}</p>
             </div>
-          </div>
 
+            {role === "MANAGER" && (
+    <button
+      className={styles.downloadBtn}
+      onClick={downloadMonthlyReport}
+    >
+      Ladda ner månadens statistik
+    </button>
+  )}
+          </div>
         </div>
       </div>
     </Layout>

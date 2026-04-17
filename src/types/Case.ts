@@ -8,4 +8,5 @@ export type Case = {
     rejectionReason?: string;
     appealed?: boolean;
 appealReason?: string;
+type: "ROLE_REQUEST" | "NORMAL";
 };

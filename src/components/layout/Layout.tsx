@@ -77,23 +77,36 @@ const Layout = ({ children }: LayoutProps) => {
                   }
                 >
                   <img src={dashboardIcon} alt="dashboard" />
-                  <span>Dashboard</span>
+                  <span>Översikt</span>
                 </NavLink>
               )}
 
-              {(role === "ADMIN" || role === "MANAGER") && (
-                <NavLink
-                  to="/"
-                  className={({ isActive }) =>
-                    isActive
-                      ? `${styles.navItem} ${styles.active}`
-                      : styles.navItem
-                  }
-                >
-                  <img src={casesIcon} alt="ärenden" />
-                  <span>Ärenden</span>
-                </NavLink>
-              )}
+{(role === "ADMIN" || role === "MANAGER") && (
+  <NavLink
+    to="/"
+    className={({ isActive }) =>
+      isActive
+        ? `${styles.navItem} ${styles.active}`
+        : styles.navItem
+    }
+  >
+    <img src={casesIcon} alt="ärenden" />
+    <span>Ärenden</span>
+  </NavLink>
+)}
+{role === "MANAGER" && (
+  <NavLink
+    to="/admin-requests"
+    className={({ isActive }) =>
+      isActive
+        ? `${styles.navItem} ${styles.active}`
+        : styles.navItem
+    }
+  >
+    <img src={casesIcon} alt="admin-begäran" />
+    <span>Admin-begäran</span>
+  </NavLink>
+)}
 
               {(role === "USER" || role === "ADMIN") && (
                 <NavLink

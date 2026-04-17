@@ -82,6 +82,7 @@ function App() {
 
         <Route path="/register" element={<Register />} />
 
+<Route path="/admin-requests" element={<CaseList />} />
       </Routes>
     </Router>
   );

@@ -1,40 +1,65 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./Header.module.css";
 import profileImg from "../../assets/Profilbild Default.png";
 import { useAuth } from "../../context/authContext";
-import { requestAdminRole } from "../../api/caseApi";
+import { requestAdminRole, getCases } from "../../api/caseApi";
 
 function Header() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [hasActiveRequest, setHasActiveRequest] = useState(false);
 
-const { name, email, role, token } = useAuth();
+  const { name, email, role, token } = useAuth();
 
-const isLoggedIn = !!token;
+  useEffect(() => {
+    const checkAdminRequest = async () => {
+      try {
+        const res = await getCases();
+
+        const exists = res.data.some(
+          (c: any) =>
+            c.type === "ROLE_REQUEST" &&
+            c.status === "SUBMITTED"
+        );
+
+        setHasActiveRequest(exists);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    checkAdminRequest();
+  }, []);
+
+  const isLoggedIn = !!token;
 
   if (!isLoggedIn) return null;
 
   const requestAdmin = async () => {
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    await requestAdminRole();
+      await requestAdminRole();
 
-    setToast("Begäran skickad!");
-    setShowModal(false);
+      setHasActiveRequest(true);
 
-    setTimeout(() => setToast(""), 2500);
-  } catch (err) {
-    console.error(err);
-    setToast("Något gick fel");
+      setToast("Begäran skickad!");
+      setShowModal(false);
 
-    setTimeout(() => setToast(""), 2500);
-  } finally {
-    setLoading(false);
-  }
-};
+      setTimeout(() => setToast(""), 2500);
+    } catch (err) {
+      console.error(err);
+      setToast("Något gick fel");
+
+      setTimeout(() => setToast(""), 2500);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
 
   return (
     <div className={styles.header}>
@@ -65,13 +90,19 @@ const isLoggedIn = !!token;
             </div>
 
             {role === "USER" && (
-              <button
-                className={styles.adminButton}
-                onClick={() => setShowModal(true)}
-                disabled={loading}
-              >
-                {loading ? "Skickar..." : "Begär admin-roll"}
-              </button>
+              hasActiveRequest ? (
+                <p className={styles.info}>
+                  Du har redan en aktiv admin-begäran
+                </p>
+              ) : (
+                <button
+                  className={styles.adminButton}
+                  onClick={() => setShowModal(true)}
+                  disabled={loading}
+                >
+                  {loading ? "Skickar..." : "Begär admin-roll"}
+                </button>
+              )
             )}
           </div>
         )}

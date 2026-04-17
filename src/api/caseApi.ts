@@ -106,6 +106,12 @@ export const appealCase = (id: string, reason: string) =>
 export const requestAdminRole = () =>
   API.post("/cases/request-admin");
 
+export const approveRole = (id: string) =>
+  API.post(`/cases/${id}/approve-role`);
+
+export const rejectRole = (id: string) =>
+  API.post(`/cases/${id}/reject-role`);
+
 // ====================
 // NOTIFICATIONS API
 // ====================
@@ -129,5 +135,21 @@ export const getNotes = (caseId: string) =>
 export const addNote = (caseId: string, text: string) =>
   API.post(`/cases/${caseId}/notes`, { text });
 
+// ====================
+// REPORTS API
+// ====================
+
+export const downloadMonthlyReport = async () => {
+  const res = await API.get("/reports/monthly", {
+    responseType: "blob",
+  });
+
+  const url = window.URL.createObjectURL(new Blob([res.data]));
+  const link = document.createElement("a");
+  link.href = url;
+  link.setAttribute("download", "monthly-report.csv");
+  document.body.appendChild(link);
+  link.click();
+};
 
 export default API;

@@ -22,6 +22,10 @@ export const translateLog = (action: string): string => {
     return "Överklagat";
   }
 
+  if (action === "ROLE_REQUEST_CREATED") {
+  return "Admin-begäran skapad";
+}
+
   return formatFallback(action);
 };
 

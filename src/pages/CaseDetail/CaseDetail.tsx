@@ -8,7 +8,9 @@ import {
   assignCase,
   appealCase,
   getNotes,
-  addNote
+  addNote,
+  approveRole,
+  rejectRole
 } from "../../api/caseApi";
 
 import type { Case } from "../../types/Case";
@@ -68,26 +70,31 @@ useEffect(() => {
   fetchData();
 }, [id]);
 
-  const handleStatus = async (status: string) => {
-    if (!id) return;
+const handleStatus = async (status: string) => {
+  if (!id) return;
 
-    if (status === "REJECTED") {
-      setShowRejectModal(true);
-      return;
-    }
-
-    try {
+  try {
+    if (caseData?.type === "ROLE_REQUEST") {
+      if (status === "APPROVED") {
+        await approveRole(id);
+      } else if (status === "REJECTED") {
+        await rejectRole(id);
+      }
+    } else {
+      // gamla vanliga
       await updateCaseStatus(id, status);
-
-      const updated = await getCaseById(id);
-      setCaseData(updated.data);
-
-      const updatedLogs = await getCaseLogs(id);
-      setLogs(updatedLogs.data);
-    } catch (err) {
-      console.error(err);
     }
-  };
+
+    const updated = await getCaseById(id);
+    setCaseData(updated.data);
+
+    const updatedLogs = await getCaseLogs(id);
+    setLogs(updatedLogs.data);
+
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   const submitReject = async () => {
     if (!id || !rejectReason.trim()) return;
@@ -193,7 +200,11 @@ return (
   <Layout>
     <div className={styles.caseDetail}>
       <div className={styles.caseMain}>
-        <h1 className={styles.title}>{caseData.title}</h1>
+        <h1 className={styles.title}>
+  {caseData.type === "ROLE_REQUEST"
+    ? "Admin-begäran"
+    : caseData.title}
+</h1>
 
         <p className={styles.description}>
           {caseData.description}
@@ -279,35 +290,58 @@ return (
 </div>
 
       <div className={styles.caseSidebar}>
-        {role === "ADMIN" && caseData.status === "SUBMITTED" && (
-          <>
-            {!caseData.assignedToName ? (
-              <button
-                className={styles.assign}
-                onClick={handleAssign}
-              >
-                Ta ärende
-              </button>
-            ) : (
-              <>
-                <button
-                  className={styles.approve}
-                  onClick={() => handleStatus("APPROVED")}
-                >
-                  Godkänn
-                </button>
+        {caseData.status === "SUBMITTED" && (
+  <>
+    {/* ROLE REQUEST → endast MANAGER */}
+    {caseData.type === "ROLE_REQUEST" && role === "MANAGER" && (
+      <>
+        <button
+          className={styles.approve}
+          onClick={() => handleStatus("APPROVED")}
+        >
+          Godkänn
+        </button>
 
-                <button
-                  className={styles.reject}
-                  onClick={() => handleStatus("REJECTED")}
-                >
-                  Avslå
-                </button>
-              </>
-            )}
+        <button
+          className={styles.reject}
+          onClick={() => handleStatus("REJECTED")}
+        >
+          Avslå
+        </button>
+      </>
+    )}
+
+    {/* ANDRA ÄRENDEN → ADMIN */}
+    {caseData.type !== "ROLE_REQUEST" && role === "ADMIN" && (
+      <>
+        {!caseData.assignedToName ? (
+          <button
+            className={styles.assign}
+            onClick={handleAssign}
+          >
+            Ta ärende
+          </button>
+        ) : (
+          <>
+            <button
+              className={styles.approve}
+              onClick={() => handleStatus("APPROVED")}
+            >
+              Godkänn
+            </button>
+
+            <button
+              className={styles.reject}
+              onClick={() => handleStatus("REJECTED")}
+            >
+              Avslå
+            </button>
           </>
         )}
-
+      </>
+    )}
+  </>
+)}
         <h3>Historik</h3>
 
         {logs.length === 0 ? (
