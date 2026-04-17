@@ -67,6 +67,13 @@ export const getCaseLogs = (id: string) =>
 export const createCase = (data: any) =>
   API.post("/cases", data);
 
+export const deleteCase = (id: number) => {
+  return API.delete(`/cases/${id}`);
+};
+
+export const deleteNotification = (id: number) =>
+  API.delete(`/notifications/${id}`);
+
 export const updateCaseStatus = (
   id: string,
   status: string,

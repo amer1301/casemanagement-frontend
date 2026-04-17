@@ -17,6 +17,7 @@ import Layout from "../../components/layout/Layout";
 import styles from "./CaseDetail.module.css";
 import type { Note } from "../../types/Note";
 import { translateLog } from "../../utils/logTranslations";
+import { useNavigate } from "react-router-dom";
 
 function CaseDetail() {
   const { id } = useParams();
@@ -26,38 +27,46 @@ function CaseDetail() {
   const [logs, setLogs] = useState<Log[]>([]);
   const [notes, setNotes] = useState<Note[]>([]);
   const [newNote, setNewNote] = useState("");
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
   const [showAppealModal, setShowAppealModal] = useState(false);
   const [appealReason, setAppealReason] = useState("");
+  const [notFound, setNotFound] = useState(false);
 
-  useEffect(() => {
-    console.log("RENDER CASE DATA:", caseData);
-    if (!id) return;
+useEffect(() => {
+  if (!id) return;
 
-    const fetchData = async () => {
-      try {
-        const caseRes = await getCaseById(id);
+  const fetchData = async () => {
+    try {
+      // 1. Hämta case (med 404-hantering)
+      const caseRes = await getCaseById(id);
+      setCaseData(caseRes.data);
 
-        console.log("CASE DATA:", caseRes.data);
+      // 2. Hämta logs & notes bara om case finns
+      const logsRes = await getCaseLogs(id);
+      const notesRes = await getNotes(id);
 
-        const logsRes = await getCaseLogs(id);
-        const notesRes = await getNotes(id);
+      setLogs(logsRes.data);
+      setNotes(notesRes.data);
 
-        setCaseData(caseRes.data);
-        setLogs(logsRes.data);
-        setNotes(notesRes.data);
-      } catch (err) {
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        // Case finns inte
+        setCaseData(null);
+        setNotFound(true);
+      } else {
         console.error(err);
-      } finally {
-        setLoading(false);
       }
-    };
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchData();
-  }, [id]);
+  fetchData();
+}, [id]);
 
   const handleStatus = async (status: string) => {
     if (!id) return;
@@ -143,30 +152,63 @@ function CaseDetail() {
     }
   };
 
-  if (loading) return <p>Laddar...</p>;
-  if (!caseData) return <p>Kunde inte hämta ärendet</p>;
-
+  if (loading) {
   return (
     <Layout>
-      <div className={styles.caseDetail}>
+      <p>Laddar...</p>
+    </Layout>
+  );
+}
 
-        <div className={styles.caseMain}>
-          <h1 className={styles.title}>{caseData.title}</h1>
+if (notFound) {
+  return (
+    <Layout>
+      <div className={styles.emptyState}>
+        <h2>Ärendet finns inte längre</h2>
+        <p>
+          Det här ärendet kan ha tagits bort eller så har du inte längre
+          behörighet att se det.
+        </p>
 
-          <p className={styles.description}>
-            {caseData.description}
-          </p>
+        <button
+          className={styles.backButton}
+          onClick={() => navigate("/notifications")}
+        >
+          ← Tillbaka till notifikationer
+        </button>
+      </div>
+    </Layout>
+  );
+}
 
-          <div className={styles.statusBox}>
-            <div className={styles.statusRow}>
-              <h3>Status</h3>
+if (!caseData) {
+  return (
+    <Layout>
+      <p>Kunde inte hämta ärendet</p>
+    </Layout>
+  );
+}
 
-              <span className={`${styles.badge} ${styles[caseData.status.toLowerCase()]}`}>
-                {caseData.status}
-              </span>
-            </div>
+return (
+  <Layout>
+    <div className={styles.caseDetail}>
+      <div className={styles.caseMain}>
+        <h1 className={styles.title}>{caseData.title}</h1>
 
-                      {role === "USER" &&
+        <p className={styles.description}>
+          {caseData.description}
+        </p>
+
+        <div className={styles.statusBox}>
+          <div className={styles.statusRow}>
+            <h3>Status</h3>
+
+            <span className={`${styles.badge} ${styles[caseData.status.toLowerCase()]}`}>
+              {caseData.status}
+            </span>
+          </div>
+
+          {role === "USER" &&
             caseData.status === "REJECTED" &&
             !caseData.appealed && (
               <button
@@ -177,156 +219,156 @@ function CaseDetail() {
               </button>
           )}
 
+          {caseData.rejectionReason && (
+            <div className={styles.rejectionBox}>
+              <h4>Avslagsmotivering</h4>
+              <p>{caseData.rejectionReason}</p>
+            </div>
+          )}
 
-            {caseData.rejectionReason && (
-              <div className={styles.rejectionBox}>
-                <h4>Avslagsmotivering</h4>
-                <p>{caseData.rejectionReason}</p>
-              </div>
-            )}
+          {caseData.appealed && (
+            <div className={styles.rejectionBox}>
+              <h4>Överklagan</h4>
+              <p>{caseData.appealReason}</p>
+            </div>
+          )}
+        </div>
 
-            {caseData.appealed && (
-              <div className={styles.rejectionBox}>
-                <h4>Överklagan</h4>
-                <p>{caseData.appealReason}</p>
-              </div>
-            )}
-          </div>
+        <div className={styles.assignedBox}>
+          <h3>Handläggare</h3>
+          <p>{caseData.assignedToName || "Ej tilldelad"}</p>
+        </div>
 
-          <div className={styles.assignedBox}>
-            <h3>Handläggare</h3>
-            <p>{caseData.assignedToName || "Ej tilldelad"}</p>
-          </div>
+        {/* ANTECKNINGAR */}
+        {(role === "ADMIN" || role === "MANAGER") && (
+        <div className={styles.notesSection}>
+          <h3 className={styles.sectionTitle}>Anteckningar</h3>
 
-          {/* ANTECKNINGAR */}
-<div className={styles.notesSection}>
-  <h3 className={styles.sectionTitle}>Anteckningar</h3>
-
-  {notes.length === 0 ? (
-    <p className={styles.empty}>Inga anteckningar ännu</p>
-  ) : (
-    notes.map((note) => (
-      <div key={note.id} className={styles.noteItem}>
-        <p className={styles.noteText}>{note.text}</p>
-        <small className={styles.noteMeta}>
-          {note.user?.name} –{" "}
-          {new Date(note.createdAt).toLocaleString()}
-        </small>
-      </div>
-    ))
-  )}
-
-  <div className={styles.noteInputBox}>
-    <textarea
-      className={styles.textarea}
-      placeholder="Skriv anteckning..."
-      value={newNote}
-      onChange={(e) => setNewNote(e.target.value)}
-    />
-
-    <button
-      className={styles.saveNote}
-      onClick={handleAddNote}
-      disabled={!newNote.trim()}
-    >
-      Spara anteckning
-    </button>
-  </div>
-</div>
-</div>
-
-        <div className={styles.caseSidebar}>
-
-{role === "ADMIN" && caseData.status === "SUBMITTED" && (
-  <>
-    {!caseData.assignedToName ? (
-      <button
-        className={styles.assign}
-        onClick={handleAssign}
-      >
-        Ta ärende
-      </button>
-    ) : (
-      <>
-        <button
-          className={styles.approve}
-          onClick={() => handleStatus("APPROVED")}
-        >
-          Godkänn
-        </button>
-
-        <button
-          className={styles.reject}
-          onClick={() => handleStatus("REJECTED")}
-        >
-          Avslå
-        </button>
-      </>
-    )}
-  </>
-)}
-          <h3>Historik</h3>
-
-          {logs.length === 0 ? (
-            <p className={styles.empty}>Ingen historik</p>
+          {notes.length === 0 ? (
+            <p className={styles.empty}>Inga anteckningar ännu</p>
           ) : (
-            logs.map((log) => (
-              <div key={log.id} className={styles.logItem}>
-                <p>{translateLog(log.action, log.user?.username)}</p>
-                <small>
-                  {log.user?.username}{" "}
-                  {log.timestamp
-                    ? new Date(log.timestamp).toLocaleString()
-                    : "Okänt datum"}
+            notes.map((note) => (
+              <div key={note.id} className={styles.noteItem}>
+                <p className={styles.noteText}>{note.text}</p>
+                <small className={styles.noteMeta}>
+                  {note.user?.name} –{" "}
+                  {new Date(note.createdAt).toLocaleString()}
                 </small>
               </div>
             ))
           )}
+
+          <div className={styles.noteInputBox}>
+            <textarea
+              className={styles.textarea}
+              placeholder="Skriv anteckning..."
+              value={newNote}
+              onChange={(e) => setNewNote(e.target.value)}
+            />
+
+            <button
+              className={styles.saveNote}
+              onClick={handleAddNote}
+              disabled={!newNote.trim()}
+            >
+              Spara anteckning
+            </button>
+          </div>
+        </div>
+      )}
+</div>
+
+      <div className={styles.caseSidebar}>
+        {role === "ADMIN" && caseData.status === "SUBMITTED" && (
+          <>
+            {!caseData.assignedToName ? (
+              <button
+                className={styles.assign}
+                onClick={handleAssign}
+              >
+                Ta ärende
+              </button>
+            ) : (
+              <>
+                <button
+                  className={styles.approve}
+                  onClick={() => handleStatus("APPROVED")}
+                >
+                  Godkänn
+                </button>
+
+                <button
+                  className={styles.reject}
+                  onClick={() => handleStatus("REJECTED")}
+                >
+                  Avslå
+                </button>
+              </>
+            )}
+          </>
+        )}
+
+        <h3>Historik</h3>
+
+        {logs.length === 0 ? (
+          <p className={styles.empty}>Ingen historik</p>
+        ) : (
+          logs.map((log) => (
+            <div key={log.id} className={styles.logItem}>
+              <p>{translateLog(log.action)}</p>
+              <small>
+                {log.user?.username}{" "}
+                {log.timestamp
+                  ? new Date(log.timestamp).toLocaleString()
+                  : "Okänt datum"}
+              </small>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+
+    {showRejectModal && (
+      <div className={styles.modalOverlay}>
+        <div className={styles.modal}>
+          <h3>Avslå ärende</h3>
+
+          <textarea
+            value={rejectReason}
+            onChange={(e) => setRejectReason(e.target.value)}
+          />
+
+          <div className={styles.modalActions}>
+            <button onClick={() => setShowRejectModal(false)}>Avbryt</button>
+            <button onClick={submitReject} disabled={!rejectReason.trim()}>
+              Skicka
+            </button>
+          </div>
         </div>
       </div>
+    )}
 
-      {showRejectModal && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modal}>
-            <h3>Avslå ärende</h3>
+    {showAppealModal && (
+      <div className={styles.modalOverlay}>
+        <div className={styles.modal}>
+          <h3>Överklaga ärende</h3>
 
-            <textarea
-              value={rejectReason}
-              onChange={(e) => setRejectReason(e.target.value)}
-            />
+          <textarea
+            value={appealReason}
+            onChange={(e) => setAppealReason(e.target.value)}
+          />
 
-            <div className={styles.modalActions}>
-              <button onClick={() => setShowRejectModal(false)}>Avbryt</button>
-              <button onClick={submitReject} disabled={!rejectReason.trim()}>
-                Skicka
-              </button>
-            </div>
+          <div className={styles.modalActions}>
+            <button onClick={() => setShowAppealModal(false)}>Avbryt</button>
+            <button onClick={submitAppeal} disabled={!appealReason.trim()}>
+              Skicka
+            </button>
           </div>
         </div>
-      )}
-
-      {showAppealModal && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modal}>
-            <h3>Överklaga ärende</h3>
-
-            <textarea
-              value={appealReason}
-              onChange={(e) => setAppealReason(e.target.value)}
-            />
-
-            <div className={styles.modalActions}>
-              <button onClick={() => setShowAppealModal(false)}>Avbryt</button>
-              <button onClick={submitAppeal} disabled={!appealReason.trim()}>
-                Skicka
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-    </Layout>
-  );
+      </div>
+    )}
+  </Layout>
+);
 }
 
 export default CaseDetail;

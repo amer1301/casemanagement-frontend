@@ -61,6 +61,17 @@
   margin-bottom: 12px;
 }
 
+.emptyState h2 {
+  color: white;
+  margin-bottom: 15px;
+  font-family: sans-serif;
+}
+
+.emptyState p {
+  color: #94a3b8;
+  font-family: sans-serif;
+}
+
 .rejectionBox h4 {
   margin-top: 12px;
 }
@@ -238,6 +249,28 @@
 
 .modalActions button:hover {
   background: rgba(255,255,255,0.1);
+}
+
+.backButton {
+  margin-top: 25px;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #A9A9F4;
+  color: white;
+  cursor: pointer;
+  background: transparent;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+
+.backButton:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 10px 25px rgba(37, 99, 235, 0.4),
+    0 0 10px rgba(59, 130, 246, 0.4);
 }
 
 button:disabled {

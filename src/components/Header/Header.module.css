@@ -30,6 +30,7 @@
   position: absolute;
   top: 75px;
   right: 0;
+  z-index: 1000;
   background: rgba(15, 23, 42, 0.95);
   backdrop-filter: blur(10px);
   border-radius: 12px;
@@ -38,7 +39,7 @@
   box-shadow: 0 10px 30px rgba(0,0,0,0.4);
   border: 1px solid rgba(255,255,255,0.05);
   animation: fadeIn 0.2s ease;
-    border: 1px solid #A9A9F4;
+  border: 1px solid #A9A9F4;
 }
 
 .dropdown p {
