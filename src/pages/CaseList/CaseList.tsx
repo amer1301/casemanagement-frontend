@@ -96,29 +96,37 @@ function CaseList({ isMyCases }: Props) {
             <p className={styles.empty}>Inga ärenden i kön</p>
           ) : (
             cases.map((c) => (
-              <div
-                key={c.id}
-                className={styles.row}
-                onClick={() => navigate(`/cases/${c.id}`)}
-              >
-                <span>{c.title}</span>
+<div
+  key={c.id}
+  className={styles.row}
+  onClick={() => navigate(`/cases/${c.id}`)}
+>
+  <div className={styles.field}>
+    <span className={styles.label}>Titel</span>
+    <span>{c.title}</span>
+  </div>
 
-                <span>
-                  {c.createdAt
-                    ? new Date(c.createdAt).toLocaleDateString()
-                    : "—"}
-                </span>
+  <div className={styles.field}>
+    <span className={styles.label}>Skapad</span>
+    <span>
+      {c.createdAt
+        ? new Date(c.createdAt).toLocaleDateString()
+        : "—"}
+    </span>
+  </div>
 
-                <span>
-                  {c.assignedToName || "Ej hanterad"}
-                </span>
+  <div className={styles.field}>
+    <span className={styles.label}>Handläggare</span>
+    <span>{c.assignedToName || "Ej hanterad"}</span>
+  </div>
 
-                <span
-                  className={`${styles.badge} ${styles[c.status.toLowerCase()]
-                    }`}
-                >
-                  {c.status}
-                </span>
+  <div className={styles.field}>
+    <span className={styles.label}>Status</span>
+
+    <span className={`${styles.badge} ${styles[c.status.toLowerCase()]}`}>
+      {c.status}
+    </span>
+  </div>
                 {(role === "MANAGER" && c.type === "ROLE_REQUEST") && (
                   <button
                     className={styles.delete}

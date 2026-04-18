@@ -3,6 +3,7 @@ import styles from "./Header.module.css";
 import profileImg from "../../assets/Profilbild Default.png";
 import { useAuth } from "../../context/authContext";
 import { requestAdminRole, getCases } from "../../api/caseApi";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
   const [open, setOpen] = useState(false);
@@ -10,7 +11,7 @@ function Header() {
   const [toast, setToast] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [hasActiveRequest, setHasActiveRequest] = useState(false);
-
+  const navigate = useNavigate();
   const { name, email, role, token } = useAuth();
 
   useEffect(() => {
@@ -59,7 +60,10 @@ function Header() {
     }
   };
 
-
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
 
   return (
     <div className={styles.header}>
@@ -104,6 +108,13 @@ function Header() {
                 </button>
               )
             )}
+            <button
+              className={styles.logoutBtn}
+              onClick={handleLogout}
+            >
+              Logga ut
+            </button>
+
           </div>
         )}
       </div>

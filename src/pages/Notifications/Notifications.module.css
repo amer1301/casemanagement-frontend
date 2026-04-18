@@ -39,6 +39,7 @@
   color: #e2e8f0;
   font-size: 16px;
   font-weight: 600;
+  padding-right: 40px;
 }
 
 .date {
@@ -115,4 +116,59 @@
 
 .modalActions button:hover {
   background: rgba(255,255,255,0.1);
+}
+
+@media (max-width: 900px) {
+
+  .container {
+    padding: 0 20px;
+  }
+
+  .title {
+    text-align: left;
+    font-size: 24px;
+  }
+
+  .card {
+    padding: 16px;
+    border-radius: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .container {
+    padding: 0 16px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .list {
+    gap: 12px;
+  }
+
+  .card {
+    padding: 14px;
+  }
+
+  .message {
+    font-size: 15px;
+    line-height: 1.4;
+    padding-right: 36px;
+  }
+
+  .date {
+    font-size: 11px;
+  }
+
+  .deleteBtn {
+    top: 10px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+  }
+
 }

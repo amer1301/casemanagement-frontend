@@ -48,7 +48,6 @@ const handleLogin = async (e: React.FormEvent) => {
 };
 
   return (
-    <div className={styles.wrapper}>
       <div className={styles.wrapper}>
         
         <div className={styles.hero}>
@@ -89,7 +88,6 @@ const handleLogin = async (e: React.FormEvent) => {
         </form>
 
       </div>
-    </div>
   );
 }
 

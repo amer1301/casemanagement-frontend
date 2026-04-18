@@ -18,7 +18,6 @@ function Dashboard() {
         const res = await getDashboard();
         setStats(res.data);
 
-        // Bara manager hämtar admin-data
         if (role === "MANAGER") {
           const adminRes = await getAdminStats();
           setAdminStats(adminRes.data);
@@ -38,7 +37,6 @@ function Dashboard() {
     <Layout>
       <div className={styles.dashboard}>
         
-        {/* HEADER */}
         <div className={styles.header}>
           <h2>Dashboard</h2>
           <p>
@@ -49,11 +47,9 @@ function Dashboard() {
         </div>
 
         <div className={styles.grid}>
-          
-          {/* LEFT */}
+
           <div>
 
-            {/* CARDS */}
             <div className={styles.cards}>
               <div className={styles.card}>
                 <h3>{stats.total}</h3>
@@ -80,7 +76,6 @@ function Dashboard() {
               </div>
             </div>
 
-            {/* ADMIN LISTA (bara för manager) */}
             {role === "MANAGER" && (
               <div className={styles.adminList}>
                 <h3>Admins</h3>
@@ -98,7 +93,6 @@ function Dashboard() {
 
           </div>
 
-          {/* RIGHT SIDEBAR */}
           <div className={styles.sidebar}>
             <h3>Översikt</h3>
 

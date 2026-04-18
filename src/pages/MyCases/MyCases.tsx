@@ -81,13 +81,13 @@ function MyCases() {
 
                 <span>{c.assignedToName}</span>
 
-                <span
-                  className={`${styles.badge} ${
-                    styles[c.status.toLowerCase()]
-                  }`}
-                >
-                  {c.status}
-                </span>
+                <div className={styles.statusWrapper}>
+                  <span className={styles.label}>Status</span>
+
+                  <span className={`${styles.badge} ${styles[c.status.toLowerCase()]}`}>
+                    {c.status}
+                  </span>
+                </div>
 
                 <button
                   className={styles.deleteBtn}
