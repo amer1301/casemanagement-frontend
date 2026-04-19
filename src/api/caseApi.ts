@@ -64,15 +64,19 @@ export const getCaseById = (id: string) =>
 export const getCaseLogs = (id: string) =>
   API.get(`/cases/${id}/logs`);
 
-export const createCase = (data: any) =>
-  API.post("/cases", data);
+export const createCase = (data: {
+  title: string;
+  description: string;
+  category: string;
+  personalNumber: string;
+  applicantName: string;
+}) => {
+  return API.post("/cases", data);
+};
 
 export const deleteCase = (id: number) => {
   return API.delete(`/cases/${id}`);
 };
-
-export const deleteNotification = (id: number) =>
-  API.delete(`/notifications/${id}`);
 
 export const updateCaseStatus = (
   id: string,
@@ -112,6 +116,11 @@ export const approveRole = (id: string) =>
 export const rejectRole = (id: string) =>
   API.post(`/cases/${id}/reject-role`);
 
+export const updatePriority = (id: number, priority: number) => {
+  return API.put(`/cases/${id}/priority`, priority);
+};
+
+
 // ====================
 // NOTIFICATIONS API
 // ====================
@@ -119,11 +128,15 @@ export const rejectRole = (id: string) =>
 export const getNotifications = () =>
   API.get("/notifications");
 
+export const deleteNotification = (id: number) =>
+  API.delete(`/notifications/${id}`);
+
 export const markNotificationsAsRead = () =>
   API.patch("/notifications/read-all");
 
 export const getUnreadCount = () =>
   API.get("/notifications/unread-count");
+
 
 // ====================
 // NOTES API
@@ -134,6 +147,7 @@ export const getNotes = (caseId: string) =>
 
 export const addNote = (caseId: string, text: string) =>
   API.post(`/cases/${caseId}/notes`, { text });
+
 
 // ====================
 // REPORTS API

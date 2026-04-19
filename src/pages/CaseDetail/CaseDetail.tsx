@@ -10,7 +10,8 @@ import {
   getNotes,
   addNote,
   approveRole,
-  rejectRole
+  rejectRole,
+  updatePriority
 } from "../../api/caseApi";
 
 import type { Case } from "../../types/Case";
@@ -30,6 +31,7 @@ function CaseDetail() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [newNote, setNewNote] = useState("");
   const navigate = useNavigate();
+  const [priority, setPriority] = useState<number | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [showRejectModal, setShowRejectModal] = useState(false);
@@ -42,21 +44,27 @@ useEffect(() => {
   if (!id) return;
 
   const fetchData = async () => {
-    try {
-      // 1. Hämta case (med 404-hantering)
-      const caseRes = await getCaseById(id);
-      setCaseData(caseRes.data);
+    setLoading(true);
+    setNotFound(false);
 
-      // 2. Hämta logs & notes bara om case finns
-      const logsRes = await getCaseLogs(id);
-      const notesRes = await getNotes(id);
+    try {
+      const caseRes = await getCaseById(id);
+      const caseData = caseRes.data;
+
+      setCaseData(caseData);
+
+      setPriority(caseData.priority ?? 3);
+
+      const [logsRes, notesRes] = await Promise.all([
+        getCaseLogs(id),
+        getNotes(id),
+      ]);
 
       setLogs(logsRes.data);
       setNotes(notesRes.data);
 
     } catch (err: any) {
       if (err.response?.status === 404) {
-        // Case finns inte
         setCaseData(null);
         setNotFound(true);
       } else {
@@ -210,6 +218,12 @@ return (
           {caseData.description}
         </p>
 
+        <div className={styles.metaBox}>
+  <p><strong>Namn:</strong> {caseData.applicantName}</p>
+  <p><strong>Personnummer:</strong> {caseData.personalNumber}</p>
+  <p><strong>Ärendetyp:</strong> {caseData.category}</p>
+</div>
+
         <div className={styles.statusBox}>
           <div className={styles.statusRow}>
             <h3>Status</h3>
@@ -341,6 +355,31 @@ return (
       </>
     )}
   </>
+)}
+{role === "ADMIN" && caseData.type !== "ROLE_REQUEST" && (
+  <div className={styles.priorityBox}>
+    <h3>Prioritet</h3>
+
+    <select
+      value={priority ?? 3}
+      onChange={async (e) => {
+        const newPriority = Number(e.target.value);
+        setPriority(newPriority);
+
+        try {
+          await updatePriority(caseData.id, newPriority);
+        } catch (err) {
+          console.error(err);
+        }
+      }}
+    >
+      <option value={1}>1 - Låg</option>
+      <option value={2}>2</option>
+      <option value={3}>3 - Normal</option>
+      <option value={4}>4</option>
+      <option value={5}>5 - Hög</option>
+    </select>
+  </div>
 )}
         <h3>Historik</h3>
 
