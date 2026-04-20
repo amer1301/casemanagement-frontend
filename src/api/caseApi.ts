@@ -117,9 +117,8 @@ export const rejectRole = (id: string) =>
   API.post(`/cases/${id}/reject-role`);
 
 export const updatePriority = (id: number, priority: number) => {
-  return API.put(`/cases/${id}/priority`, priority);
+  return API.put(`/cases/${id}/priority`, { priority });
 };
-
 
 // ====================
 // NOTIFICATIONS API

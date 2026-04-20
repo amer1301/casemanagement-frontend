@@ -23,8 +23,16 @@ export const translateLog = (action: string): string => {
   }
 
   if (action === "ROLE_REQUEST_CREATED") {
-  return "Admin-begäran skapad";
-}
+    return "Admin-begäran skapad";
+  }
+
+  if (action.startsWith("PRIORITY_INCREASED_")) {
+    const parts = action.split("_");
+    const from = parts[2];
+    const to = parts[4];
+
+    return `Prioritet höjd från ${from} till ${to}`;
+  }
 
   return formatFallback(action);
 };

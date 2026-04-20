@@ -21,6 +21,7 @@ import styles from "./CaseDetail.module.css";
 import type { Note } from "../../types/Note";
 import { translateLog } from "../../utils/logTranslations";
 import { useNavigate } from "react-router-dom";
+import { translateCategory } from "../../utils/categoryTranslations";
 
 function CaseDetail() {
   const { id } = useParams();
@@ -32,6 +33,7 @@ function CaseDetail() {
   const [newNote, setNewNote] = useState("");
   const navigate = useNavigate();
   const [priority, setPriority] = useState<number | null>(null);
+  const [priorityOpen, setPriorityOpen] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [showRejectModal, setShowRejectModal] = useState(false);
@@ -77,6 +79,18 @@ useEffect(() => {
 
   fetchData();
 }, [id]);
+
+useEffect(() => {
+  const handleClickOutside = () => {
+    setPriorityOpen(false);
+  };
+
+  window.addEventListener("click", handleClickOutside);
+
+  return () => {
+    window.removeEventListener("click", handleClickOutside);
+  };
+}, []);
 
 const handleStatus = async (status: string) => {
   if (!id) return;
@@ -219,9 +233,13 @@ return (
         </p>
 
         <div className={styles.metaBox}>
+<div className={styles.infoBox}>
+  <h3>Information</h3>
+
   <p><strong>Namn:</strong> {caseData.applicantName}</p>
   <p><strong>Personnummer:</strong> {caseData.personalNumber}</p>
-  <p><strong>Ärendetyp:</strong> {caseData.category}</p>
+<p><strong>Ärendetyp:</strong> {translateCategory(caseData.category)}</p>
+</div>
 </div>
 
         <div className={styles.statusBox}>
@@ -358,28 +376,38 @@ return (
 )}
 {role === "ADMIN" && caseData.type !== "ROLE_REQUEST" && (
   <div className={styles.priorityBox}>
-    <h3>Prioritet</h3>
+  <h3>Prioritet</h3>
 
-    <select
-      value={priority ?? 3}
-      onChange={async (e) => {
-        const newPriority = Number(e.target.value);
-        setPriority(newPriority);
-
-        try {
-          await updatePriority(caseData.id, newPriority);
-        } catch (err) {
-          console.error(err);
-        }
-      }}
-    >
-      <option value={1}>1 - Låg</option>
-      <option value={2}>2</option>
-      <option value={3}>3 - Normal</option>
-      <option value={4}>4</option>
-      <option value={5}>5 - Hög</option>
-    </select>
+<div className={styles.dropdown}
+  onClick={(e) => e.stopPropagation()}
+  >
+  <div
+    className={styles.dropdownSelected}
+    onClick={() => setPriorityOpen(!priorityOpen)}
+  >
+    {priority}
   </div>
+
+  {priorityOpen && (
+    <div className={styles.dropdownMenu}>
+      {[1,2,3,4,5].map((p) => (
+        <div
+          key={p}
+          className={styles.dropdownItem}
+          onClick={async () => {
+            setPriority(p);
+            setPriorityOpen(false);
+
+            await updatePriority(caseData.id, p);
+          }}
+        >
+          {p} {p === 1 ? "- Låg" : p === 3 ? "- Normal" : p === 5 ? "- Hög" : ""}
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+</div>
 )}
         <h3>Historik</h3>
 

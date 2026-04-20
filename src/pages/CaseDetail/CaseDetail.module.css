@@ -378,6 +378,109 @@ button:disabled {
   font-size: 14px;
 }
 
+.infoBox {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+
+.infoBox h3 {
+  color: #94a3b8;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.infoBox p {
+  font-size: 15px;
+  color: #e2e8f0;
+  margin-bottom: 6px;
+}
+
+.infoBox strong {
+  color: #94a3b8;
+  font-weight: 500;
+  margin-right: 6px;
+}
+
+.priorityBox {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+
+.priorityBox h3 {
+  color: #f1f5f9;
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+
+.prioritySelect {
+  width: 100%;
+  padding: 12px 40px 12px 12px;
+
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+
+  background: linear-gradient(
+    to right,
+    rgba(255,255,255,0.05),
+    rgba(255,255,255,0.02)
+  );
+
+  color: white;
+  font-size: 15px;
+
+  appearance: none;
+  cursor: pointer;
+  transition: 0.2s;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='%23cbd5f5' viewBox='0 0 20 20'%3E%3Cpath d='M5 7l5 5 5-5H5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+}
+.dropdown {
+  position: relative;
+}
+
+.dropdownSelected {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.05);
+  cursor: pointer;
+  color: white;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  width: 100%;
+
+  background: #0f172a;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+
+  overflow: hidden;
+  z-index: 10;
+}
+
+.dropdownItem {
+  padding: 12px;
+  cursor: pointer;
+  color: white;
+}
+
+.dropdownItem:hover {
+  background: rgba(99,102,241,0.2);
+}
+
 @media (max-width: 900px) {
   .caseDetail {
     grid-template-columns: 1fr;

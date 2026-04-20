@@ -47,45 +47,55 @@ const [category, setCategory] = useState<CaseCategory>("STUDY");
     }
   };
 
-  const validate = () => {
-    let valid = true;
+const validate = () => {
+  let valid = true;
 
-    const newErrors = {
-      title: "",
-      description: "",
-      personalNumber: "",
-      applicantName: ""
-    };
-
-    if (!title.trim()) {
-      newErrors.title = "Titel krävs";
-      valid = false;
-    } else if (title.length < 3) {
-      newErrors.title = "Minst 3 tecken";
-      valid = false;
-    }
-
-    if (!description.trim()) {
-      newErrors.description = "Beskrivning krävs";
-      valid = false;
-    } else if (description.length < 10) {
-      newErrors.description = "Minst 10 tecken";
-      valid = false;
-    }
-
-    if (!applicantName.trim()) {
-      newErrors.applicantName = "Namn krävs";
-      valid = false;
-    }
-
-    if (!personalNumber.trim()) {
-      newErrors.personalNumber = "Personnummer krävs";
-      valid = false;
-    }
-
-    setErrors(newErrors);
-    return valid;
+  const newErrors = {
+    title: "",
+    description: "",
+    personalNumber: "",
+    applicantName: ""
   };
+
+  // TITLE
+  if (!title.trim()) {
+    newErrors.title = "Titel krävs";
+    valid = false;
+  } else if (title.length < 3) {
+    newErrors.title = "Minst 3 tecken";
+    valid = false;
+  }
+
+  // DESCRIPTION
+  if (!description.trim()) {
+    newErrors.description = "Beskrivning krävs";
+    valid = false;
+  } else if (description.length < 10) {
+    newErrors.description = "Minst 10 tecken";
+    valid = false;
+  }
+
+  // NAMN
+  if (!applicantName.trim()) {
+    newErrors.applicantName = "Namn krävs";
+    valid = false;
+  } else if (!/^[\p{L}\s-]+$/u.test(applicantName)) {
+    newErrors.applicantName = "Endast bokstäver tillåtna";
+    valid = false;
+  }
+
+  // PERSONNUMMER
+  if (!personalNumber.trim()) {
+    newErrors.personalNumber = "Personnummer krävs";
+    valid = false;
+  } else if (!/^\d{10,12}$/.test(personalNumber)) {
+    newErrors.personalNumber = "Ange 10–12 siffror";
+    valid = false;
+  }
+
+  setErrors(newErrors);
+  return valid;
+};
 
   return (
     <Layout>
@@ -101,9 +111,10 @@ const [category, setCategory] = useState<CaseCategory>("STUDY");
               placeholder="Namn"
               value={applicantName}
               onChange={(e) => {
-                setApplicantName(e.target.value);
-                setErrors((prev) => ({ ...prev, applicantName: "" }));
-              }}
+  const value = e.target.value.replace(/[0-9]/g, "");
+  setApplicantName(value);
+  setErrors((prev) => ({ ...prev, applicantName: "" }));
+}}
             />
             {errors.applicantName && (
               <span className={styles.errorText}>{errors.applicantName}</span>
@@ -113,13 +124,16 @@ const [category, setCategory] = useState<CaseCategory>("STUDY");
           {/* PERSONNUMMER */}
           <div className={styles.field}>
             <input
+  inputMode="numeric"
+  pattern="[0-9]*"
               className={`${styles.input} ${errors.personalNumber ? styles.errorInput : ""}`}
-              placeholder="Personnummer"
+              placeholder="Personnummer (YYYYMMDDXXXX)"
               value={personalNumber}
               onChange={(e) => {
-                setPersonalNumber(e.target.value);
-                setErrors((prev) => ({ ...prev, personalNumber: "" }));
-              }}
+  const value = e.target.value.replace(/\D/g, "");
+  setPersonalNumber(value);
+  setErrors((prev) => ({ ...prev, personalNumber: "" }));
+}}
             />
             {errors.personalNumber && (
               <span className={styles.errorText}>{errors.personalNumber}</span>
@@ -129,6 +143,7 @@ const [category, setCategory] = useState<CaseCategory>("STUDY");
           {/* KATEGORI */}
           <div className={styles.field}>
 <select
+  className={styles.select}
   value={category}
   onChange={(e) => setCategory(e.target.value as CaseCategory)}
 >
