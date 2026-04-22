@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import styles from "./Header.module.css";
 import profileImg from "../../assets/Profilbild Default.png";
 import { useAuth } from "../../context/authContext";
-import { requestAdminRole, getCases } from "../../api/caseApi";
+import { getMyRoleRequests, requestAdminRole } from "../../api/caseApi";
 import { useNavigate } from "react-router-dom";
 
 function Header() {
@@ -11,18 +11,19 @@ function Header() {
   const [toast, setToast] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [hasActiveRequest, setHasActiveRequest] = useState(false);
+
   const navigate = useNavigate();
   const { name, email, role, token } = useAuth();
+
+  const isLoggedIn = !!token;
 
   useEffect(() => {
     const checkAdminRequest = async () => {
       try {
-        const res = await getCases();
+        const res = await getMyRoleRequests();
 
-        const exists = res.data.some(
-          (c: any) =>
-            c.type === "ROLE_REQUEST" &&
-            c.status === "SUBMITTED"
+        const exists = res.some(
+          (r: any) => r.status === "PENDING"
         );
 
         setHasActiveRequest(exists);
@@ -31,10 +32,10 @@ function Header() {
       }
     };
 
-    checkAdminRequest();
-  }, []);
-
-  const isLoggedIn = !!token;
+    if (isLoggedIn) {
+      checkAdminRequest();
+    }
+  }, [isLoggedIn]);
 
   if (!isLoggedIn) return null;
 
@@ -87,6 +88,7 @@ function Header() {
             >
               ×
             </button>
+
             <div className={styles.userInfo}>
               <p className={styles.name}>{name || "Användare"}</p>
               <p className={styles.email}>{email || "Ingen e-post"}</p>
@@ -108,13 +110,13 @@ function Header() {
                 </button>
               )
             )}
+
             <button
               className={styles.logoutBtn}
               onClick={handleLogout}
             >
               Logga ut
             </button>
-
           </div>
         )}
       </div>

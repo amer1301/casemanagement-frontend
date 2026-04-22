@@ -7,6 +7,7 @@ import createIcon from "../../assets/Skapa ärenden.svg";
 import logoutIcon from "../../assets/Logout.svg";
 import loginIcon from "../../assets/Logga in.svg";
 import notificationIcon from "../../assets/notification.svg";
+import adminRequestIcon from "../../assets/adminRequest.svg";
 
 import { useNavigate, NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/authContext";
@@ -30,7 +31,7 @@ const Layout = ({ children }: LayoutProps) => {
     const fetchUnreadCount = async () => {
       try {
         const res = await getUnreadCount();
-        setUnreadCount(res.data);
+        setUnreadCount(res);
       } catch (err) {
         console.error(err);
       }
@@ -56,8 +57,6 @@ const Layout = ({ children }: LayoutProps) => {
       <div className={styles.app}>
 
         <aside className={styles.sidebar}>
-          <h2 className={styles.logo}>CaseManagement</h2>
-
           {!isLoggedIn && (
             <p className={styles.loginHint}>
               Logga in för att se innehåll
@@ -103,7 +102,7 @@ const Layout = ({ children }: LayoutProps) => {
         : styles.navItem
     }
   >
-    <img src={casesIcon} alt="admin-begäran" />
+    <img src={adminRequestIcon} alt="admin-begäran" />
     <span>Admin-begäran</span>
   </NavLink>
 )}

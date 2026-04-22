@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { getAssignedCases, deleteCase } from "../../api/caseApi";
+import { getMyCases, getAssignedCases, deleteCase } from "../../api/caseApi";
+import { useAuth } from "../../context/authContext";
 import Layout from "../../components/layout/Layout";
 import styles from "./MyCases.module.css";
 import { useNavigate } from "react-router-dom";
@@ -9,20 +10,28 @@ function MyCases() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
+  const { role } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCases = async () => {
       try {
-        const res = await getAssignedCases();
-        setCases(res.data);
+        let res;
+
+        if (role === "ADMIN") {
+          res = await getAssignedCases();
+        } else {
+          res = await getMyCases();
+        }
+
+        setCases(res);
       } catch (err) {
         console.error(err);
       }
     };
 
     fetchCases();
-  }, []);
+  }, [role]);
 
   const openDeleteModal = (id: number) => {
     setSelectedId(id);
@@ -34,7 +43,6 @@ function MyCases() {
 
     try {
       await deleteCase(selectedId);
-
       setCases((prev) => prev.filter((c) => c.id !== selectedId));
     } catch (err) {
       console.error(err);
@@ -47,9 +55,11 @@ function MyCases() {
   return (
     <Layout>
       <div className={styles.container}>
-
+      <main className={styles.main}>
         <div className={styles.header}>
-          <h2>Mina ärenden</h2>
+          <h1>
+            {role === "ADMIN" ? "Mina tilldelade ärenden" : "Mina ärenden"}
+          </h1>
         </div>
 
         <div className={styles.table}>
@@ -63,7 +73,11 @@ function MyCases() {
           </div>
 
           {cases.length === 0 ? (
-            <p className={styles.empty}>Inga tilldelade ärenden</p>
+            <p className={styles.empty}>
+              {role === "ADMIN"
+                ? "Inga tilldelade ärenden"
+                : "Inga skapade ärenden"}
+            </p>
           ) : (
             cases.map((c) => (
               <div
@@ -79,12 +93,16 @@ function MyCases() {
                     : "—"}
                 </span>
 
-                <span>{c.assignedToName}</span>
+                <span>{c.assignedToName || "Ej hanterad"}</span>
 
                 <div className={styles.statusWrapper}>
                   <span className={styles.label}>Status</span>
 
-                  <span className={`${styles.badge} ${styles[c.status.toLowerCase()]}`}>
+                  <span
+                    className={`${styles.badge} ${
+                      styles[c.status.toLowerCase()]
+                    }`}
+                  >
                     {c.status}
                   </span>
                 </div>
@@ -127,7 +145,7 @@ function MyCases() {
             </div>
           </div>
         )}
-
+</main>
       </div>
     </Layout>
   );

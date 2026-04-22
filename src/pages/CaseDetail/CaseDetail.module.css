@@ -481,6 +481,31 @@ button:disabled {
   background: rgba(99,102,241,0.2);
 }
 
+.errorBox {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 12px 14px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+
+  font-size: 14px;
+  line-height: 1.4;
+
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 900px) {
   .caseDetail {
     grid-template-columns: 1fr;

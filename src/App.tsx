@@ -9,6 +9,8 @@ import Register from "./pages/Register/Register";
 import MyCases from "./pages/MyCases/MyCases";
 import Notifications from "./pages/Notifications/Notifications";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminRequests from "./pages/AdminRequest/AdminRequests";
+
 
 function App() {
   return (
@@ -39,7 +41,16 @@ function App() {
   path="/user/my-cases"
   element={
     <ProtectedRoute allowedRoles={["USER"]}>
-      <CaseList isMyCases />
+      <MyCases />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/admin-requests"
+  element={
+    <ProtectedRoute allowedRoles={["MANAGER"]}>
+      <AdminRequests />
     </ProtectedRoute>
   }
 />

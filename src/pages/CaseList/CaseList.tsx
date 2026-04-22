@@ -3,57 +3,29 @@ import { useNavigate } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
 import styles from "./CaseList.module.css";
 import { useAuth } from "../../context/authContext";
-import {
-  getAssignedCases,
-  getUnassignedCases,
-  getCases,
-  deleteCase
-} from "../../api/caseApi";
+import { getUnassignedCases, deleteCase } from "../../api/caseApi";
 
-type Props = {
-  isMyCases?: boolean;
-};
-
-function CaseList({ isMyCases }: Props) {
+function CaseList() {
   const [cases, setCases] = useState<any[]>([]);
   const navigate = useNavigate();
   const { role } = useAuth();
+
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedCaseId, setSelectedCaseId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchCases = async () => {
       try {
-        let res;
-
-        if (isMyCases) {
-          if (role === "ADMIN") {
-            res = await getAssignedCases();
-          } else {
-            res = await getCases();
-          }
-        } else {
-          res = await getUnassignedCases();
-        }
-
-        // FILTRERING
-        let filteredCases = res.data;
-
-        if (role !== "MANAGER") {
-          filteredCases = filteredCases.filter(
-            (c: any) => c.type !== "ROLE_REQUEST"
-          );
-        }
-
-        setCases(filteredCases);
-
+        const res = await getUnassignedCases();
+        setCases(res ?? []);
       } catch (err) {
         console.error(err);
+        setCases([]);
       }
     };
 
     fetchCases();
-  }, [isMyCases, role]);
+  }, []);
 
   const handleDelete = async () => {
     if (!selectedCaseId) return;
@@ -67,7 +39,6 @@ function CaseList({ isMyCases }: Props) {
 
       setShowDeleteModal(false);
       setSelectedCaseId(null);
-
     } catch (err) {
       console.error(err);
     }
@@ -76,58 +47,60 @@ function CaseList({ isMyCases }: Props) {
   return (
     <Layout>
       <div className={styles.container}>
-
         <div className={styles.header}>
-          <h2>{isMyCases ? "Mina ärenden" : "Ärenden"}</h2>
+          <h1 className={styles.h1}>Ärenden</h1>
         </div>
 
         <div className={styles.table}>
-
           <div className={styles.tableHeader}>
             <span>Titel</span>
             <span>Skapad</span>
-
             {role !== "MANAGER" && <span>Handläggare</span>}
-
             <span>Status</span>
           </div>
 
-          {!cases || cases.length === 0 ? (
+          {cases.length === 0 ? (
             <p className={styles.empty}>Inga ärenden i kön</p>
           ) : (
             cases.map((c) => (
-<div
-  key={c.id}
-  className={styles.row}
-  onClick={() => navigate(`/cases/${c.id}`)}
->
-  <div className={styles.field}>
-    <span className={styles.label}>Titel</span>
-    <span>{c.title}</span>
-  </div>
+              <div
+                key={c.id}
+                className={styles.row}
+                onClick={() => navigate(`/cases/${c.id}`)}
+              >
+                <div className={styles.field}>
+                  <span className={styles.label}>Titel</span>
+                  <span>{c.title}</span>
+                </div>
 
-  <div className={styles.field}>
-    <span className={styles.label}>Skapad</span>
-    <span>
-      {c.createdAt
-        ? new Date(c.createdAt).toLocaleDateString()
-        : "—"}
-    </span>
-  </div>
+                <div className={styles.field}>
+                  <span className={styles.label}>Skapad</span>
+                  <span>
+                    {c.createdAt
+                      ? new Date(c.createdAt).toLocaleDateString()
+                      : "—"}
+                  </span>
+                </div>
 
-  <div className={styles.field}>
-    <span className={styles.label}>Handläggare</span>
-    <span>{c.assignedToName || "Ej hanterad"}</span>
-  </div>
+                {role !== "MANAGER" && (
+                  <div className={styles.field}>
+                    <span className={styles.label}>Handläggare</span>
+                    <span>{c.assignedToName || "Ej hanterad"}</span>
+                  </div>
+                )}
 
-  <div className={styles.field}>
-    <span className={styles.label}>Status</span>
+                <div className={styles.field}>
+                  <span className={styles.label}>Status</span>
+                  <span
+                    className={`${styles.badge} ${
+                      styles[c.status.toLowerCase()]
+                    }`}
+                  >
+                    {c.status}
+                  </span>
+                </div>
 
-    <span className={`${styles.badge} ${styles[c.status.toLowerCase()]}`}>
-      {c.status}
-    </span>
-  </div>
-                {(role === "MANAGER" && c.type === "ROLE_REQUEST") && (
+                {role === "MANAGER" && (
                   <button
                     className={styles.delete}
                     onClick={(e) => {
@@ -143,13 +116,12 @@ function CaseList({ isMyCases }: Props) {
             ))
           )}
         </div>
+
         {showDeleteModal && (
           <div className={styles.modalOverlay}>
             <div className={styles.modal}>
               <h3>Bekräfta borttagning</h3>
-              <p>
-                Är du säker på att du vill ta bort denna admin-begäran?
-              </p>
+              <p>Är du säker på att du vill ta bort detta ärende?</p>
 
               <div className={styles.modalActions}>
                 <button onClick={() => setShowDeleteModal(false)}>

@@ -1,15 +1,14 @@
-.container {
+.container,
+.main {
   padding: 32px;
 }
 
-.header {
-  margin-bottom: 24px;
-}
 
-.header h2 {
+.header h1 {
   font-size: 28px;
   font-weight: 600;
-  color: #e2e8f0;
+  margin-bottom: 24px;
+  color: white;
 }
 
 .table {
@@ -220,7 +219,7 @@
     padding: 16px;
   }
 
-  .header h2 {
+  .header h1 {
     font-size: 22px;
   }
 

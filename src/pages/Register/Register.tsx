@@ -88,18 +88,23 @@ function Register() {
 
   return (
       <div className={styles.wrapper}>
-
+      <main className={styles.main}>
         <div className={styles.hero}>
-          <img src={heroImg} alt="hero" />
+           <img
+            src={heroImg}
+            alt="Illustration av ärendehantering"
+          />
         </div>
 
         <div className={styles.card}>
-          <h2>Registrera</h2>
+          <h1>Registrera</h1>
 
           <div className={styles.field}>
+            <label htmlFor="name">Namn</label>
             <input
-              placeholder="Namn"
+              id="name"
               value={name}
+              autoComplete="name"
               className={errors.name ? styles.errorInput : ""}
               onChange={(e) => {
                 setName(e.target.value);
@@ -113,8 +118,11 @@ function Register() {
           </div>
 
           <div className={styles.field}>
+            <label htmlFor="email">E-post</label>
             <input
-              placeholder="Email"
+              id="email"
+              type="email"
+              autoComplete="email"
               value={email}
               className={errors.email ? styles.errorInput : ""}
               onChange={(e) => {
@@ -128,10 +136,12 @@ function Register() {
             )}
           </div>
 
-          <div className={styles.field}>
+           <div className={styles.field}>
+            <label htmlFor="password">Lösenord</label>
             <input
+              id="password"
               type="password"
-              placeholder="Lösenord"
+              autoComplete="new-password"
               value={password}
               className={errors.password ? styles.errorInput : ""}
               onChange={(e) => {
@@ -161,6 +171,7 @@ function Register() {
 
           {error && <p className={styles.error}>{error}</p>}
         </div>
+        </main>
       </div>
   );
 }

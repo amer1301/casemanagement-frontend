@@ -16,11 +16,11 @@ function Dashboard() {
     const fetchStats = async () => {
       try {
         const res = await getDashboard();
-        setStats(res.data);
+        setStats(res);
 
         if (role === "MANAGER") {
           const adminRes = await getAdminStats();
-          setAdminStats(adminRes.data);
+          setAdminStats(adminRes);
         }
 
       } catch (err) {
@@ -36,9 +36,9 @@ function Dashboard() {
   return (
     <Layout>
       <div className={styles.dashboard}>
-        
+        <main className={styles.main}>
         <div className={styles.header}>
-          <h2>Dashboard</h2>
+          <h1>Dashboard</h1>
           <p>
             {role === "MANAGER"
               ? "Översikt (alla admins)"
@@ -57,19 +57,19 @@ function Dashboard() {
               </div>
 
               <div className={styles.card}>
-                <h3>{stats.pending}</h3>
+                <h3>{stats.unassigned}</h3>
                 <p>Ej hanterade</p>
               </div>
 
               <div className={styles.card}>
-                <h3>{stats.handled}</h3>
+                <h3>{stats.assigned}</h3>
                 <p>Hanterade</p>
               </div>
 
               <div className={styles.card}>
                 <h3>
                   {stats.total > 0
-                    ? Math.round((stats.handled / stats.total) * 100)
+                    ? Math.round((stats.assigned / stats.total) * 100)
                     : 0}%
                 </h3>
                 <p>Slutförda</p>
@@ -85,7 +85,7 @@ function Dashboard() {
                     <span>{admin.name}</span>
                     <span>{admin.total} ärenden</span>
                     <span>{admin.handled} hanterade</span>
-                    <span>{admin.pending} pending</span>
+                    <span>{admin.pending} väntande</span>
                   </div>
                 ))}
               </div>
@@ -98,8 +98,8 @@ function Dashboard() {
 
             <div className={styles.profileCard}>
               <p>Totala ärenden: {stats.total}</p>
-              <p>Ej hanterade: {stats.pending}</p>
-              <p>Hanterade: {stats.handled}</p>
+              <p>Ej hanterade: {stats.unassigned}</p>
+              <p>Hanterade: {stats.assigned}</p>
             </div>
 
             {role === "MANAGER" && (
@@ -112,6 +112,7 @@ function Dashboard() {
   )}
           </div>
         </div>
+        </main>
       </div>
     </Layout>
   );

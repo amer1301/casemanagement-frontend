@@ -66,7 +66,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setEmail(null);
       setName(null);
     }
-  }, [token]);
+  }, [token, email]);
 
   const setAuth = ({
     token,

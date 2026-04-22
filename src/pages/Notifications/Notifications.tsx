@@ -20,7 +20,7 @@ function Notifications() {
     const fetchData = async () => {
       try {
         const res = await getNotifications();
-        setNotifications(res.data);
+        setNotifications(res);
 
         await markNotificationsAsRead();
       } catch (err) {
@@ -58,13 +58,14 @@ function Notifications() {
   return (
     <Layout>
       <div className={styles.container}>
+              <main className={styles.main}>
         <h1 className={styles.title}>Notifikationer</h1>
 
-        {notifications.length === 0 ? (
+        {notifications?.length === 0 ? (
           <p className={styles.empty}>Inga notifikationer</p>
         ) : (
           <div className={styles.list}>
-            {notifications.map((n) => (
+            {notifications?.map((n) => (
               <div
                 key={n.id}
                 className={styles.card}
@@ -113,7 +114,7 @@ function Notifications() {
             </div>
           </div>
         )}
-
+</main>
       </div>
     </Layout>
   );
