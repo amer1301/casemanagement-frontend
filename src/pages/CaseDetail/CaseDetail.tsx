@@ -234,6 +234,7 @@ const handleStatus = async (status: string) => {
 
   return (
     <Layout>
+      <main className={styles.main}>
       <div className={styles.caseDetail}>
         <div className={styles.caseMain}>
           <h1 className={styles.title}>{caseData.title}</h1>
@@ -244,7 +245,7 @@ const handleStatus = async (status: string) => {
 
           <div className={styles.metaBox}>
             <div className={styles.infoBox}>
-              <h3>Information</h3>
+              <h2>Information</h2>
               <p><strong>Namn:</strong> {caseData.applicantName}</p>
               <p><strong>Personnummer:</strong> {caseData.personalNumber}</p>
               <p><strong>Ärendetyp:</strong> {translateCategory(caseData.category)}</p>
@@ -253,7 +254,7 @@ const handleStatus = async (status: string) => {
 
           <div className={styles.statusBox}>
             <div className={styles.statusRow}>
-              <h3>Status</h3>
+              <h2>Status</h2>
               <span className={`${styles.badge} ${styles[caseData.status.toLowerCase()]}`}>
                 {caseData.status}
               </span>
@@ -272,21 +273,21 @@ const handleStatus = async (status: string) => {
 
             {caseData.rejectionReason && (
               <div className={styles.rejectionBox}>
-                <h4>Avslagsmotivering</h4>
+                <h3>Avslagsmotivering</h3>
                 <p>{caseData.rejectionReason}</p>
               </div>
             )}
 
             {caseData.appealed && (
               <div className={styles.rejectionBox}>
-                <h4>Överklagan</h4>
+                <h3>Överklagan</h3>
                 <p>{caseData.appealReason}</p>
               </div>
             )}
           </div>
 
           <div className={styles.assignedBox}>
-            <h3>Handläggare</h3>
+            <h2>Handläggare</h2>
             <p>{caseData.assignedToName || "Ej tilldelad"}</p>
           </div>
 
@@ -365,7 +366,7 @@ const handleStatus = async (status: string) => {
 
           {role === "ADMIN" && (
             <div className={styles.priorityBox}>
-              <h3>Prioritet</h3>
+              <h2>Prioritet</h2>
 
               <div
                 className={styles.dropdown}
@@ -399,7 +400,7 @@ const handleStatus = async (status: string) => {
             </div>
           )}
 
-          <h3>Historik</h3>
+          <h2>Historik</h2>
 
           {logs.length === 0 ? (
             <p className={styles.empty}>Ingen historik</p>
@@ -422,7 +423,7 @@ const handleStatus = async (status: string) => {
       {showRejectModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
-            <h3>Avslå ärende</h3>
+            <h2>Avslå ärende</h2>
 
             <textarea
               value={rejectReason}
@@ -442,7 +443,7 @@ const handleStatus = async (status: string) => {
       {showAppealModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
-            <h3>Överklaga ärende</h3>
+            <h2>Överklaga ärende</h2>
 
             <textarea
               value={appealReason}
@@ -458,6 +459,7 @@ const handleStatus = async (status: string) => {
           </div>
         </div>
       )}
+      </main>
     </Layout>
   );
 }

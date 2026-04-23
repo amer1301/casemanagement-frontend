@@ -51,9 +51,9 @@
   gap: 10px;
 }
 
-.statusBox,
-.assignedBox h3,
-.rejectionBox h4,
+.statusBox h2,
+.assignedBox h2,
+.rejectionBox h3,
 .notesSection .sectionTitle {
   color: #94a3b8;
   font-size: 13px;
@@ -73,7 +73,7 @@
   font-family: sans-serif;
 }
 
-.rejectionBox h4 {
+.rejectionBox h3 {
   margin-top: 12px;
 }
 
@@ -120,7 +120,7 @@
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
 }
 
-.caseSidebar h3 {
+.caseSidebar h2 {
   color: #f1f5f9;
   margin-bottom: 18px;
 }
@@ -222,7 +222,7 @@
   color: #e2e8f0;
 }
 
-.modal h3 {
+.modal h2 {
   margin-bottom: 16px;
 }
 
@@ -386,7 +386,7 @@ button:disabled {
   margin-bottom: 20px;
 }
 
-.infoBox h3 {
+.infoBox h2 {
   color: #94a3b8;
   font-size: 13px;
   text-transform: uppercase;
@@ -414,7 +414,7 @@ button:disabled {
   margin-bottom: 20px;
 }
 
-.priorityBox h3 {
+.priorityBox h2 {
   color: #f1f5f9;
   margin-bottom: 12px;
   font-size: 18px;

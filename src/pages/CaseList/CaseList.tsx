@@ -47,6 +47,7 @@ function CaseList() {
   return (
     <Layout>
       <div className={styles.container}>
+        <main className={styles.main}>
         <div className={styles.header}>
           <h1 className={styles.h1}>Ärenden</h1>
         </div>
@@ -138,6 +139,7 @@ function CaseList() {
             </div>
           </div>
         )}
+        </main>
       </div>
     </Layout>
   );
