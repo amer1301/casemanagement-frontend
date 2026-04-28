@@ -5,6 +5,15 @@ import { useAuth } from "../../context/authContext";
 import { getMyRoleRequests, requestAdminRole } from "../../api/caseApi";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * Header-komponent som visar användarinformation och meny.
+ *
+ * Funktionalitet:
+ * - Visar användarens namn, email och roll
+ * - Hanterar logout
+ * - Tillåter USER att begära admin-roll
+ * - Visar dropdown och modal
+ */
 function Header() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -17,6 +26,10 @@ function Header() {
 
   const isLoggedIn = !!token;
 
+  /**
+   * Hämtar användarens rollbegäranden vid inloggning
+   * för att kontrollera om en aktiv (PENDING) begäran finns
+   */
   useEffect(() => {
     const checkAdminRequest = async () => {
       try {
@@ -39,6 +52,10 @@ function Header() {
 
   if (!isLoggedIn) return null;
 
+  /**
+   * Skickar begäran om admin-roll.
+   * Hanterar loading-state och toast-feedback.
+   */
   const requestAdmin = async () => {
     try {
       setLoading(true);
@@ -61,6 +78,10 @@ function Header() {
     }
   };
 
+  /**
+   * Loggar ut användaren genom att ta bort token
+   * och navigera till login-sidan.
+   */
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");

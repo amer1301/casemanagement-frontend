@@ -6,6 +6,14 @@ import styles from "./CreateCase.module.css";
 import { caseCategoryLabels } from "../../types/CaseCategory";
 import type { CaseCategory } from "../../types/CaseCategory";
 
+/**
+ * CreateCasePage låter användaren skapa ett nytt ärende.
+ *
+ * Funktionalitet:
+ * - Formulär med validering
+ * - Input-sanitization (t.ex. siffror/bokstäver)
+ * - Skickar data till backend
+ */
 function CreateCasePage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -25,6 +33,13 @@ function CreateCasePage() {
 
   const navigate = useNavigate();
 
+  /**
+   * Hanterar submit av formuläret.
+   *
+   * - Validerar input
+   * - Skickar data till backend
+   * - Navigerar efter lyckad skapning
+   */
   const handleSubmit = async () => {
     if (!validate()) return;
 
@@ -47,6 +62,14 @@ function CreateCasePage() {
     }
   };
 
+  /**
+   * Validerar formulärdata.
+   *
+   * - Kontrollerar tomma fält
+   * - Längdkrav
+   * - Format (regex)
+   * - Sätter felmeddelanden i state
+   */
   const validate = () => {
     let valid = true;
 
@@ -107,6 +130,7 @@ function CreateCasePage() {
                 placeholder="Namn"
                 value={applicantName}
                 onChange={(e) => {
+                  // Tar bort siffror (input-sanitization)
                   const value = e.target.value.replace(/[0-9]/g, "");
                   setApplicantName(value);
                   setErrors((prev) => ({ ...prev, applicantName: "" }));
@@ -125,6 +149,7 @@ function CreateCasePage() {
                 placeholder="Personnummer (YYYYMMDDXXXX)"
                 value={personalNumber}
                 onChange={(e) => {
+                  // Tillåter endast siffror
                   const value = e.target.value.replace(/\D/g, "");
                   setPersonalNumber(value);
                   setErrors((prev) => ({ ...prev, personalNumber: "" }));

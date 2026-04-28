@@ -8,9 +8,20 @@ import {
   deleteRoleRequest
 } from "../../api/caseApi";
 
+/**
+ * AdminRequests visar alla rollbegäranden (endast för MANAGER).
+ *
+ * Funktionalitet:
+ * - Hämtar alla begäranden vid mount
+ * - Tillåter godkänna/avslå
+ * - Tillåter borttagning (soft delete)
+ */
 function AdminRequests() {
   const [requests, setRequests] = useState<any[]>([]);
 
+  /**
+   * Hämtar alla role requests från backend vid första render.
+   */
   useEffect(() => {
     const fetchRequests = async () => {
       try {
@@ -24,7 +35,10 @@ function AdminRequests() {
     fetchRequests();
   }, []);
 
-
+  /**
+   * Godkänner en rollbegäran.
+   * Uppdaterar state lokalt (optimistic update).
+   */
   const handleApprove = async (id: number) => {
     try {
       await approveRole(id);
@@ -38,6 +52,10 @@ function AdminRequests() {
     }
   };
 
+  /**
+   * Avslår en rollbegäran.
+   * Uppdaterar state lokalt.
+   */
   const handleReject = async (id: number) => {
     try {
       await rejectRole(id);
@@ -51,6 +69,10 @@ function AdminRequests() {
     }
   };
 
+  /**
+   * Tar bort en begäran (soft delete i backend).
+   * Filtrerar bort den från listan i UI.
+   */
   const handleDelete = async (id: number) => {
     try {
       await deleteRoleRequest(id);

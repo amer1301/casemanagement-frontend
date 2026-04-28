@@ -17,7 +17,13 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-// Decode JWT
+/**
+ * Parsar JWT-token för att extrahera payload (t.ex. role, email).
+ *
+ * Notera:
+ * - JWT delas upp i tre delar: header.payload.signature
+ * - Payload (index 1) base64-dekodas
+ */
 function parseJwt(token: string): any {
   try {
     return JSON.parse(atob(token.split(".")[1]));
@@ -26,6 +32,14 @@ function parseJwt(token: string): any {
   }
 }
 
+/**
+ * AuthProvider hanterar global autentiseringsstate.
+ *
+ * Ansvar:
+ * - Lagra token och användarinformation
+ * - Synka state med localStorage
+ * - Extrahera roll från JWT
+ */
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(
     localStorage.getItem("token")
@@ -39,7 +53,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.getItem("name")
   );
 
-  // Sync role och fallback email från token
+  /**
+   * Synkar roll och email från JWT-token.
+   *
+   * - Extraherar roll från token payload
+   * - Tar bort "ROLE_" prefix
+   * - Fallback: sätter email från token (sub)
+   */
   useEffect(() => {
     if (token) {
       const decoded = parseJwt(token);
@@ -68,6 +88,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [token, email]);
 
+  /**
+   * Uppdaterar autentiseringsdata.
+   * - Sparar i localStorage
+   * - Uppdaterar React state
+   */
   const setAuth = ({
     token,
     email,
@@ -100,18 +125,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setName(name);
   };
 
-const logout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("email");
-  localStorage.removeItem("name");
+  /**
+   * Loggar ut användaren.
+   * - Rensar localStorage
+   * - Resetar state
+   * - Redirectar till login
+   */
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("email");
+    localStorage.removeItem("name");
 
-  setToken(null);
-  setRole(null);
-  setEmail(null);
-  setName(null);
+    setToken(null);
+    setRole(null);
+    setEmail(null);
+    setName(null);
 
-  window.location.href = "/login";
-};
+    window.location.href = "/login";
+  };
 
   return (
     <AuthContext.Provider
@@ -122,7 +153,9 @@ const logout = () => {
   );
 }
 
-// Hook
+/**
+ * Custom hook för att använda AuthContext.
+ */
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -131,7 +164,9 @@ export const useAuth = () => {
   return context;
 };
 
-// För axios interceptor
+/**
+ * Helper för att hämta token (används t.ex. i axios interceptor).
+ */
 export const getToken = () => {
   return localStorage.getItem("token");
 };

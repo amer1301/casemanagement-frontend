@@ -11,64 +11,28 @@ import Notifications from "./pages/Notifications/Notifications";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRequests from "./pages/AdminRequest/AdminRequests";
 
-
+/**
+ * App-komponenten definierar alla routes i applikationen.
+ *
+ * - Publika routes (login/register)
+ * - Skyddade routes via ProtectedRoute
+ * - Rollbaserad access (USER, ADMIN, MANAGER)
+ */
 function App() {
   return (
     <Router>
       <Routes>
 
+        {/* Publika routes */}
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
+        {/* ADMIN + MANAGER */}
         <Route
           path="/"
           element={
             <ProtectedRoute allowedRoles={["ADMIN", "MANAGER"]}>
               <CaseList />
-            </ProtectedRoute>
-          }
-        />
-
-<Route
-  path="/my-cases"
-  element={
-    <ProtectedRoute allowedRoles={["ADMIN"]}>
-      <MyCases />
-    </ProtectedRoute>
-  }
-/>
-
-<Route
-  path="/user/my-cases"
-  element={
-    <ProtectedRoute allowedRoles={["USER"]}>
-      <MyCases />
-    </ProtectedRoute>
-  }
-/>
-
-<Route
-  path="/admin-requests"
-  element={
-    <ProtectedRoute allowedRoles={["MANAGER"]}>
-      <AdminRequests />
-    </ProtectedRoute>
-  }
-/>
-
-        <Route
-          path="/cases/:id"
-          element={
-            <ProtectedRoute>
-              <CaseDetail />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/create"
-          element={
-            <ProtectedRoute allowedRoles={["USER"]}>
-              <CreateCase />
             </ProtectedRoute>
           }
         />
@@ -82,18 +46,64 @@ function App() {
           }
         />
 
+        {/* ADMIN */}
         <Route
-  path="/notifications"
-  element={
-    <ProtectedRoute>
-      <Notifications />
-    </ProtectedRoute>
-  }
-/>
+          path="/my-cases"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <MyCases />
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path="/register" element={<Register />} />
+        {/* USER */}
+        <Route
+          path="/user/my-cases"
+          element={
+            <ProtectedRoute allowedRoles={["USER"]}>
+              <MyCases />
+            </ProtectedRoute>
+          }
+        />
 
-<Route path="/admin-requests" element={<CaseList />} />
+        <Route
+          path="/create"
+          element={
+            <ProtectedRoute allowedRoles={["USER"]}>
+              <CreateCase />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* MANAGER */}
+        <Route
+          path="/admin-requests"
+          element={
+            <ProtectedRoute allowedRoles={["MANAGER"]}>
+              <AdminRequests />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Alla inloggade */}
+        <Route
+          path="/cases/:id"
+          element={
+            <ProtectedRoute>
+              <CaseDetail />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <Notifications />
+            </ProtectedRoute>
+          }
+        />
+
       </Routes>
     </Router>
   );

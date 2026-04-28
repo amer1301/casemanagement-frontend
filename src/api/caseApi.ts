@@ -5,16 +5,16 @@ const API = axios.create({
   baseURL: "http://localhost:8080",
 });
 
-// ====================
-// HELPER
-// ====================
-
+/**
+ * Helper för att extrahera data från backendens standardiserade ApiResponse.
+ * Backend returnerar: { success, data, message }
+ */
 const unwrap = (res: any) => res.data.data;
 
-// ====================
-// INTERCEPTORS
-// ====================
-
+/**
+ * Request interceptor:
+ * - Lägger automatiskt till JWT-token i Authorization-header
+ */
 API.interceptors.request.use((config) => {
   const token = getToken();
 
@@ -26,6 +26,11 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
+/**
+ * Response interceptor:
+ * - Hanterar 401 (unauthorized)
+ * - Loggar ut användaren och redirectar till login
+ */
 API.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -37,9 +42,7 @@ API.interceptors.response.use(
   }
 );
 
-// ====================
 // AUTH API
-// ====================
 
 export const registerUser = async (data: {
   name: string;
@@ -58,9 +61,7 @@ export const loginUser = async (data: {
   return unwrap(res);
 };
 
-// ====================
 // CASE API
-// ====================
 
 export const getCases = async () => unwrap(await API.get("/cases"));
 
@@ -141,9 +142,7 @@ export const getMyRoleRequests = async () => {
 export const updatePriority = async (id: number, priority: number) =>
   unwrap(await API.put(`/cases/${id}/priority`, { priority }));
 
-// ====================
 // NOTIFICATIONS API
-// ====================
 
 export const getNotifications = async () => {
   const res = await API.get("/notifications");
@@ -163,9 +162,7 @@ export const getUnreadCount = async () => {
   return res.data;
 };
 
-// ====================
 // NOTES API
-// ====================
 
 export const getNotes = async (caseId: string) =>
   unwrap(await API.get(`/cases/${caseId}/notes`));
@@ -173,10 +170,12 @@ export const getNotes = async (caseId: string) =>
 export const addNote = async (caseId: string, text: string) =>
   unwrap(await API.post(`/cases/${caseId}/notes`, { text }));
 
-// ====================
 // REPORTS API
-// ====================
 
+/**
+ * Laddar ner månadsrapport som CSV-fil.
+ * Använder blob för att trigga filnedladdning i browsern.
+ */
 export const downloadMonthlyReport = async () => {
   const res = await API.get("/reports/monthly", {
     responseType: "blob",

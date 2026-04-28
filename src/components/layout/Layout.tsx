@@ -18,6 +18,14 @@ type LayoutProps = {
   children: ReactNode;
 };
 
+/**
+ * Layout-komponent som definierar sidans struktur.
+ *
+ * Funktionalitet:
+ * - Sidebar-navigation baserad på användarens roll
+ * - Header visas endast för inloggade användare
+ * - Notifikationsbadge uppdateras dynamiskt
+ */
 const Layout = ({ children }: LayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -26,7 +34,13 @@ const Layout = ({ children }: LayoutProps) => {
 
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // Hämta antal olästa notifikationer
+  /**
+   * Hämtar antal olästa notifikationer.
+   *
+   * location.pathname används som dependency för att
+   * trigga uppdatering när användaren navigerar,
+   * så att badge alltid visar aktuell data.
+   */
   useEffect(() => {
     const fetchUnreadCount = async () => {
       try {
@@ -40,9 +54,13 @@ const Layout = ({ children }: LayoutProps) => {
     if (token) {
       fetchUnreadCount();
     }
-  }, [token, location.pathname]); 
-  // location gör att badge uppdateras när man navigerar
+  }, [token, location.pathname]);
 
+  /**
+   * Hanterar login/logout.
+   * - Tar bort token vid logout
+   * - Navigerar till login-sidan
+   */
   const handleAuthClick = () => {
     if (isLoggedIn) {
       localStorage.removeItem("token");
@@ -80,32 +98,33 @@ const Layout = ({ children }: LayoutProps) => {
                 </NavLink>
               )}
 
-{(role === "ADMIN" || role === "MANAGER") && (
-  <NavLink
-    to="/"
-    className={({ isActive }) =>
-      isActive
-        ? `${styles.navItem} ${styles.active}`
-        : styles.navItem
-    }
-  >
-    <img src={casesIcon} alt="ärenden" />
-    <span>Ärenden</span>
-  </NavLink>
-)}
-{role === "MANAGER" && (
-  <NavLink
-    to="/admin-requests"
-    className={({ isActive }) =>
-      isActive
-        ? `${styles.navItem} ${styles.active}`
-        : styles.navItem
-    }
-  >
-    <img src={adminRequestIcon} alt="admin-begäran" />
-    <span>Admin-begäran</span>
-  </NavLink>
-)}
+              {(role === "ADMIN" || role === "MANAGER") && (
+                <NavLink
+                  to="/"
+                  className={({ isActive }) =>
+                    isActive
+                      ? `${styles.navItem} ${styles.active}`
+                      : styles.navItem
+                  }
+                >
+                  <img src={casesIcon} alt="ärenden" />
+                  <span>Ärenden</span>
+                </NavLink>
+              )}
+
+              {role === "MANAGER" && (
+                <NavLink
+                  to="/admin-requests"
+                  className={({ isActive }) =>
+                    isActive
+                      ? `${styles.navItem} ${styles.active}`
+                      : styles.navItem
+                  }
+                >
+                  <img src={adminRequestIcon} alt="admin-begäran" />
+                  <span>Admin-begäran</span>
+                </NavLink>
+              )}
 
               {(role === "USER" || role === "ADMIN") && (
                 <NavLink

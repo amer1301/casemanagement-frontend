@@ -158,18 +158,13 @@
   position: fixed;
   bottom: 30px;
   right: 30px;
-
   background: rgba(15, 23, 42, 0.95);
   border: 1px solid #A9A9F4;
   color: white;
-
   padding: 12px 18px;
   border-radius: 12px;
-
   font-size: 14px;
-
   box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-
   animation: fadeInUp 0.3s ease;
 }
 

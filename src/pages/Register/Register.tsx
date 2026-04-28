@@ -4,6 +4,14 @@ import styles from "./Register.module.css";
 import heroImg from "../../assets/Hero Startsida.png";
 import { registerUser } from "../../api/caseApi";
 
+/**
+ * Register-komponent för att skapa nya användare.
+ *
+ * Funktionalitet:
+ * - Formulär med validering
+ * - Skickar data till backend
+ * - Hanterar fel och success feedback
+ */
 function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -19,6 +27,13 @@ function Register() {
 
   const navigate = useNavigate();
 
+  /**
+   * Hanterar registrering.
+   *
+   * - Validerar input
+   * - Skickar request till backend
+   * - Visar success eller felmeddelande
+   */
   const handleRegister = async () => {
     setError("");
     setSuccess("");
@@ -32,8 +47,10 @@ function Register() {
         password,
       });
 
+      // Visar feedback till användaren
       setSuccess("Registrering lyckades!");
 
+      // Redirect efter kort delay (bättre UX)
       setTimeout(() => {
         navigate("/login");
       }, 2000);
@@ -41,6 +58,7 @@ function Register() {
     } catch (err: any) {
       console.error(err);
 
+      // Specifik hantering av duplicate email
       if (err.response?.status === 409) {
         setError("E-postadressen används redan");
       } else {
@@ -49,6 +67,13 @@ function Register() {
     }
   };
 
+  /**
+   * Validerar formulärdata.
+   *
+   * - Kontrollerar tomma fält
+   * - Enkla formatkrav
+   * - Sätter felmeddelanden i state
+   */
   const validate = () => {
     let valid = true;
 
@@ -87,10 +112,10 @@ function Register() {
   };
 
   return (
-      <div className={styles.wrapper}>
+    <div className={styles.wrapper}>
       <main className={styles.main}>
         <div className={styles.hero}>
-           <img
+          <img
             src={heroImg}
             alt="Illustration av ärendehantering"
           />
@@ -136,7 +161,7 @@ function Register() {
             )}
           </div>
 
-           <div className={styles.field}>
+          <div className={styles.field}>
             <label htmlFor="password">Lösenord</label>
             <input
               id="password"
@@ -171,8 +196,8 @@ function Register() {
 
           {error && <p className={styles.error}>{error}</p>}
         </div>
-        </main>
-      </div>
+      </main>
+    </div>
   );
 }
 

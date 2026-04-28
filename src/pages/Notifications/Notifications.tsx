@@ -9,6 +9,15 @@ import {
   deleteNotification
 } from "../../api/caseApi";
 
+/**
+ * Notifications visar användarens notifikationer.
+ *
+ * Funktionalitet:
+ * - Hämtar notifikationer från backend
+ * - Markerar alla som lästa vid visning
+ * - Navigerar till kopplat ärende
+ * - Tillåter borttagning (soft delete)
+ */
 function Notifications() {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -16,12 +25,19 @@ function Notifications() {
 
   const navigate = useNavigate();
 
+  /**
+   * Hämtar notifikationer och markerar dem som lästa.
+   *
+   * - Först hämtas data
+   * - Därefter uppdateras status i backend (read = true)
+   */
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await getNotifications();
         setNotifications(res);
 
+        // Markerar alla som lästa efter hämtning
         await markNotificationsAsRead();
       } catch (err) {
         console.error(err);
@@ -31,19 +47,24 @@ function Notifications() {
     fetchData();
   }, []);
 
+  /**
+   * Öppnar delete-modal och sparar valt id.
+   */
   const openDeleteModal = (id: number) => {
     setSelectedId(id);
     setShowDeleteModal(true);
   };
 
+  /**
+   * Tar bort en notifikation och uppdaterar listan lokalt.
+   */
   const handleDelete = async () => {
     if (!selectedId) return;
-
-    console.log("Deleting notification with ID:", selectedId);
 
     try {
       await deleteNotification(selectedId);
 
+      // Uppdaterar UI direkt efter borttagning
       setNotifications((prev) =>
         prev.filter((n) => n.id !== selectedId)
       );
@@ -58,63 +79,64 @@ function Notifications() {
   return (
     <Layout>
       <div className={styles.container}>
-              <main className={styles.main}>
-        <h1 className={styles.title}>Notifikationer</h1>
+        <main className={styles.main}>
+          <h1 className={styles.title}>Notifikationer</h1>
 
-        {notifications?.length === 0 ? (
-          <p className={styles.empty}>Inga notifikationer</p>
-        ) : (
-          <div className={styles.list}>
-            {notifications?.map((n) => (
-              <div
-                key={n.id}
-                className={styles.card}
-                onClick={() => navigate(`/cases/${n.caseId}`)}
-              >
-                <p className={styles.message}>{n.message}</p>
-
-                <span className={styles.date}>
-                  {new Date(n.createdAt).toLocaleString()}
-                </span>
-
-                <button
-                  className={styles.deleteBtn}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    openDeleteModal(n.id);
-                  }}
+          {notifications?.length === 0 ? (
+            <p className={styles.empty}>Inga notifikationer</p>
+          ) : (
+            <div className={styles.list}>
+              {notifications?.map((n) => (
+                <div
+                  key={n.id}
+                  className={styles.card}
+                  // Navigerar till ärendet kopplat till notisen
+                  onClick={() => navigate(`/cases/${n.caseId}`)}
                 >
-                  ×
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
+                  <p className={styles.message}>{n.message}</p>
 
-        {showDeleteModal && (
-          <div className={styles.modalOverlay}>
-            <div className={styles.modal}>
-              <h3>Bekräfta borttagning</h3>
-              <p>
-                Är du säker på att du vill ta bort denna notifikation?
-              </p>
+                  <span className={styles.date}>
+                    {new Date(n.createdAt).toLocaleString()}
+                  </span>
 
-              <div className={styles.modalActions}>
-                <button onClick={() => setShowDeleteModal(false)}>
-                  Avbryt
-                </button>
+                  <button
+                    className={styles.deleteBtn}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Förhindrar navigation vid delete
+                      openDeleteModal(n.id);
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
 
-                <button
-                  className={styles.deleteConfirm}
-                  onClick={handleDelete}
-                >
-                  Ja, ta bort
-                </button>
+          {showDeleteModal && (
+            <div className={styles.modalOverlay}>
+              <div className={styles.modal}>
+                <h3>Bekräfta borttagning</h3>
+                <p>
+                  Är du säker på att du vill ta bort denna notifikation?
+                </p>
+
+                <div className={styles.modalActions}>
+                  <button onClick={() => setShowDeleteModal(false)}>
+                    Avbryt
+                  </button>
+
+                  <button
+                    className={styles.deleteConfirm}
+                    onClick={handleDelete}
+                  >
+                    Ja, ta bort
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-</main>
+          )}
+        </main>
       </div>
     </Layout>
   );
