@@ -444,6 +444,7 @@ button:disabled {
   background-position: right 12px center;
   background-size: 16px;
 }
+
 .dropdown {
   position: relative;
 }
@@ -462,11 +463,9 @@ button:disabled {
   top: 110%;
   left: 0;
   width: 100%;
-
   background: #0f172a;
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 10px;
-
   overflow: hidden;
   z-index: 10;
 }

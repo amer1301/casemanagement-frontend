@@ -19,6 +19,7 @@ import styles from "./CaseDetail.module.css";
 import type { Note } from "../../types/Note";
 import { translateLog } from "../../utils/logTranslations";
 import { translateCategory } from "../../utils/categoryTranslations";
+import { translateStatus } from "../../utils/statusTranslations";
 
 /**
  * CaseDetail visar detaljer för ett specifikt ärende.
@@ -297,7 +298,7 @@ function CaseDetail() {
               <div className={styles.statusRow}>
                 <h2>Status</h2>
                 <span className={`${styles.badge} ${styles[caseData.status.toLowerCase()]}`}>
-                  {caseData.status}
+                  {translateStatus(caseData.status)}
                 </span>
               </div>
 

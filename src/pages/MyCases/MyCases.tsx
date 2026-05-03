@@ -4,6 +4,7 @@ import { useAuth } from "../../context/authContext";
 import Layout from "../../components/layout/Layout";
 import styles from "./MyCases.module.css";
 import { useNavigate } from "react-router-dom";
+import { translateStatus } from "../../utils/statusTranslations";
 
 /**
  * MyCases visar ärenden beroende på användarroll:
@@ -128,7 +129,7 @@ function MyCases() {
                         styles[c.status.toLowerCase()]
                       }`}
                     >
-                      {c.status}
+                      {translateStatus(c.status)}
                     </span>
                   </div>
 

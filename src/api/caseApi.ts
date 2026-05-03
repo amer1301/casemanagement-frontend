@@ -63,7 +63,18 @@ export const loginUser = async (data: {
 
 // CASE API
 
-export const getCases = async () => unwrap(await API.get("/cases"));
+export const getCases = async (params: {
+  page?: number;
+  size?: number;
+  status?: string;
+  q?: string;
+  sortBy?: string;
+  direction?: string;
+  assignedTo?: number;
+}) => {
+  const res = await API.get("/cases", { params });
+  return res.data;
+};
 
 export const getMyCases = async () => unwrap(await API.get("/cases/my"));
 

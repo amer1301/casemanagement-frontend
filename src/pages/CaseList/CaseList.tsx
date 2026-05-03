@@ -3,51 +3,74 @@ import { useNavigate } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
 import styles from "./CaseList.module.css";
 import { useAuth } from "../../context/authContext";
-import { getUnassignedCases, deleteCase } from "../../api/caseApi";
+import { getCases, deleteCase } from "../../api/caseApi";
+import { translateStatus } from "../../utils/statusTranslations";
+import { ArrowUp, ArrowDown } from "lucide-react";
 
-/**
- * CaseList visar alla ej tilldelade ärenden.
- *
- * Funktionalitet:
- * - Hämtar ärenden vid mount
- * - Navigerar till detaljsida vid klick
- * - Tillåter MANAGER att ta bort ärenden
- */
 function CaseList() {
   const [cases, setCases] = useState<any[]>([]);
-  const navigate = useNavigate();
-  const { role } = useAuth();
+  const [totalPages, setTotalPages] = useState(0);
+
+  const [page, setPage] = useState(0);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [assignedFilter, setAssignedFilter] = useState("");
+  const [sortBy, setSortBy] = useState("createdAt");
+  const [direction, setDirection] = useState<"asc" | "desc">("desc");
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedCaseId, setSelectedCaseId] = useState<number | null>(null);
 
-  /**
-   * Hämtar alla ej tilldelade ärenden från backend.
-   */
+  const navigate = useNavigate();
+  const { role } = useAuth();
+
   useEffect(() => {
     const fetchCases = async () => {
       try {
-        const res = await getUnassignedCases();
-        setCases(res ?? []);
+        let res;
+
+        if (role === "MANAGER") {
+          res = await getCases({
+            page,
+            size: 10,
+            status: statusFilter || undefined,
+            q: search || undefined,
+            sortBy,
+            direction,
+            assignedTo:
+              assignedFilter === ""
+                ? undefined
+                : assignedFilter === "unassigned"
+                ? -1
+                : Number(assignedFilter),
+          });
+        } else if (role === "ADMIN") {
+          res = await getCases({
+            page,
+            size: 10,
+            q: search || undefined,
+            sortBy,
+            direction,
+          });
+        }
+
+        setCases(res.data.content);
+        setTotalPages(res.data.totalPages);
       } catch (err) {
         console.error(err);
         setCases([]);
       }
     };
 
-    fetchCases();
-  }, []);
+    if (role) fetchCases();
+  }, [page, search, statusFilter, assignedFilter, sortBy, direction]);
 
-  /**
-   * Tar bort ett ärende och uppdaterar listan lokalt.
-   */
   const handleDelete = async () => {
     if (!selectedCaseId) return;
 
     try {
       await deleteCase(selectedCaseId);
 
-      // Uppdaterar UI direkt efter borttagning
       setCases((prev) =>
         prev.filter((c) => c.id !== selectedCaseId)
       );
@@ -59,25 +82,93 @@ function CaseList() {
     }
   };
 
+  const uniqueAdmins = Array.from(
+    new Map(
+      cases
+        .filter((c) => c.assignedTo && c.assignedToName)
+        .map((c) => [c.assignedTo, c.assignedToName])
+    ).entries()
+  );
+
   return (
     <Layout>
       <div className={styles.container}>
         <main className={styles.main}>
+
           <div className={styles.header}>
             <h1 className={styles.h1}>Ärenden</h1>
+          </div>
+
+          <div className={styles.filters}>
+            <input
+              type="text"
+              placeholder="Sök ärende..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(0);
+              }}
+            />
+
+            {role === "MANAGER" && (
+              <>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => {
+                    setStatusFilter(e.target.value);
+                    setPage(0);
+                  }}
+                >
+                  <option value="">Alla statusar</option>
+                  <option value="APPROVED">Godkänd</option>
+                  <option value="REJECTED">Avslagen</option>
+                  <option value="SUBMITTED">Inskickad</option>
+                </select>
+
+                <select
+                  value={assignedFilter}
+                  onChange={(e) => {
+                    setAssignedFilter(e.target.value);
+                    setPage(0);
+                  }}
+                >
+                  <option value="">Alla handläggare</option>
+                  <option value="unassigned">Ej tilldelad</option>
+                  {uniqueAdmins.map(([id, name]) => (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+              </>
+            )}
           </div>
 
           <div className={styles.table}>
             <div className={styles.tableHeader}>
               <span>Titel</span>
-              <span>Skapad</span>
-              {/* Handläggare visas inte för MANAGER */}
-              {role !== "MANAGER" && <span>Handläggare</span>}
+              <span
+                onClick={() => {
+                  setSortBy("createdAt");
+                  setDirection((prev) =>
+                    prev === "asc" ? "desc" : "asc"
+                  );
+                }}
+                className={styles.sortHeader}
+              >
+                Skapad
+                {direction === "asc" ? (
+                  <ArrowUp size={22} className={styles.sortIcon} />
+                ) : (
+                  <ArrowDown size={22} className={styles.sortIcon} />
+                )}
+              </span>
+              <span>Handläggare</span>
               <span>Status</span>
             </div>
 
             {cases.length === 0 ? (
-              <p className={styles.empty}>Inga ärenden i kön</p>
+              <p className={styles.empty}>Inga ärenden hittades</p>
             ) : (
               cases.map((c) => (
                 <div
@@ -99,12 +190,10 @@ function CaseList() {
                     </span>
                   </div>
 
-                  {role !== "MANAGER" && (
-                    <div className={styles.field}>
-                      <span className={styles.label}>Handläggare</span>
-                      <span>{c.assignedToName || "Ej hanterad"}</span>
-                    </div>
-                  )}
+                  <div className={styles.field}>
+                    <span className={styles.label}>Handläggare</span>
+                    <span>{c.assignedToName || "Ej hanterad"}</span>
+                  </div>
 
                   <div className={styles.field}>
                     <span className={styles.label}>Status</span>
@@ -113,7 +202,7 @@ function CaseList() {
                         styles[c.status.toLowerCase()]
                       }`}
                     >
-                      {c.status}
+                      {translateStatus(c.status)}
                     </span>
                   </div>
 
@@ -121,7 +210,7 @@ function CaseList() {
                     <button
                       className={styles.delete}
                       onClick={(e) => {
-                        e.stopPropagation(); // Förhindrar navigation vid klick på delete
+                        e.stopPropagation();
                         setSelectedCaseId(c.id);
                         setShowDeleteModal(true);
                       }}
@@ -132,6 +221,26 @@ function CaseList() {
                 </div>
               ))
             )}
+          </div>
+
+          <div className={styles.pagination}>
+            <button
+              disabled={page === 0}
+              onClick={() => setPage((prev) => prev - 1)}
+            >
+              Föregående
+            </button>
+
+            <span>
+              Sida {page + 1} av {totalPages}
+            </span>
+
+            <button
+              disabled={page + 1 >= totalPages}
+              onClick={() => setPage((prev) => prev + 1)}
+            >
+              Nästa
+            </button>
           </div>
 
           {showDeleteModal && (
