@@ -1,13 +1,6 @@
 import type { ReactNode } from "react";
 import styles from "./Layout.module.css";
 import Header from "../Header/Header";
-import dashboardIcon from "../../../public/Dashboard.svg";
-import casesIcon from "../../../public/Ärenden.svg";
-import createIcon from "../../../public/Skapa ärenden.svg";
-import logoutIcon from "../../../public/Logout.svg";
-import loginIcon from "../../../public/Logga in.svg";
-import notificationIcon from "../../../public/notification.svg";
-import adminRequestIcon from "../../../public/adminRequest.svg";
 
 import { useNavigate, NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/authContext";
@@ -93,7 +86,7 @@ const Layout = ({ children }: LayoutProps) => {
                       : styles.navItem
                   }
                 >
-                  <img src={dashboardIcon} alt="dashboard" />
+                  <img src="/dashboard.svg" alt="dashboard" />
                   <span>Översikt</span>
                 </NavLink>
               )}
@@ -107,7 +100,7 @@ const Layout = ({ children }: LayoutProps) => {
                       : styles.navItem
                   }
                 >
-                  <img src={casesIcon} alt="ärenden" />
+                  <img src="/Ärenden.svg" alt="ärenden" />
                   <span>Ärenden</span>
                 </NavLink>
               )}
@@ -121,7 +114,7 @@ const Layout = ({ children }: LayoutProps) => {
                       : styles.navItem
                   }
                 >
-                  <img src={adminRequestIcon} alt="admin-begäran" />
+                  <img src="/adminRequest.svg" alt="admin-begäran" />
                   <span>Admin-begäran</span>
                 </NavLink>
               )}
@@ -135,7 +128,7 @@ const Layout = ({ children }: LayoutProps) => {
                       : styles.navItem
                   }
                 >
-                  <img src={notificationIcon} alt="notifikationer" />
+                  <img src="/notification.svg" alt="notifikationer" />
                   <span>Notifikationer</span>
 
                   {unreadCount > 0 && (
@@ -155,7 +148,7 @@ const Layout = ({ children }: LayoutProps) => {
                       : styles.navItem
                   }
                 >
-                  <img src={casesIcon} alt="mina ärenden" />
+                  <img src="/Ärenden.svg" alt="mina ärenden" />
                   <span>Mina ärenden</span>
                 </NavLink>
               )}
@@ -169,7 +162,7 @@ const Layout = ({ children }: LayoutProps) => {
                       : styles.navItem
                   }
                 >
-                  <img src={casesIcon} alt="mina ärenden" />
+                  <img src="/Ärenden.svg" alt="mina ärenden" />
                   <span>Mina ärenden</span>
                 </NavLink>
               )}
@@ -183,7 +176,7 @@ const Layout = ({ children }: LayoutProps) => {
                       : styles.navItem
                   }
                 >
-                  <img src={createIcon} alt="create" />
+                  <img src="/skapaÄrenden.svg" alt="create" />
                   <span>Skapa ärende</span>
                 </NavLink>
               )}
@@ -192,8 +185,11 @@ const Layout = ({ children }: LayoutProps) => {
           )}
 
           <div className={styles.logout} onClick={handleAuthClick}>
-            <img src={isLoggedIn ? logoutIcon : loginIcon} alt="auth" />
-            <span>{isLoggedIn ? "Logga ut" : "Logga in"}</span>
+            <img
+  src={isLoggedIn ? "/logOut.svg" : "/logIn.svg"}
+  alt="auth"
+/>
+<span>{isLoggedIn ? "Logga ut" : "Logga in"}</span>
           </div>
         </aside>
 

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Login.module.css";
-import heroImg from "../../assets/Hero Startsida.png";
 import { useAuth } from "../../context/authContext";
 import { loginUser } from "../../api/caseApi";
 
@@ -69,7 +68,7 @@ function Login() {
     <div className={styles.wrapper}>
       <main className={styles.main}>
         <div className={styles.hero}>
-          <img src={heroImg} alt="Illustration av ärendehantering" />
+          <img src="/heroStartsida.png" alt="Illustration av ärendehantering" />
         </div>
 
         <form className={styles.card} onSubmit={handleLogin}>

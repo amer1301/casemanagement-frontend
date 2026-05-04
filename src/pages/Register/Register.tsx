@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Register.module.css";
-import heroImg from "../../assets/Hero Startsida.png";
 import { registerUser } from "../../api/caseApi";
 
 /**
@@ -116,7 +115,7 @@ function Register() {
       <main className={styles.main}>
         <div className={styles.hero}>
           <img
-            src={heroImg}
+            src="/heroStartsida.png"
             alt="Illustration av ärendehantering"
           />
         </div>

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import styles from "./Header.module.css";
-import profileImg from "../../assets/Profilbild Default.png";
 import { useAuth } from "../../context/authContext";
 import { getMyRoleRequests, requestAdminRole } from "../../api/caseApi";
 import { useNavigate } from "react-router-dom";
@@ -95,7 +94,7 @@ function Header() {
 
       <div className={styles.profileWrapper}>
         <img
-          src={profileImg}
+          src="/profilbildDefault.png"
           alt="profil"
           className={styles.avatar}
           onClick={() => setOpen(!open)}
