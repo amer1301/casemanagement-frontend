@@ -2,9 +2,8 @@ import axios from "axios";
 import { getToken } from "../context/authContext";
 
 const API = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: import.meta.env.VITE_API_URL,
 });
-
 /**
  * Helper för att extrahera data från backendens standardiserade ApiResponse.
  * Backend returnerar: { success, data, message }
