@@ -1,13 +1,13 @@
 import type { ReactNode } from "react";
 import styles from "./Layout.module.css";
 import Header from "../Header/Header";
-import dashboardIcon from "../../assets/Dashboard.svg";
-import casesIcon from "../../assets/Ärenden.svg";
-import createIcon from "../../assets/Skapa ärenden.svg";
-import logoutIcon from "../../assets/Logout.svg";
-import loginIcon from "../../assets/Logga in.svg";
-import notificationIcon from "../../assets/notification.svg";
-import adminRequestIcon from "../../assets/adminRequest.svg";
+import dashboardIcon from "../../../public/Dashboard.svg";
+import casesIcon from "../../../public/Ärenden.svg";
+import createIcon from "../../../public/Skapa ärenden.svg";
+import logoutIcon from "../../../public/Logout.svg";
+import loginIcon from "../../../public/Logga in.svg";
+import notificationIcon from "../../../public/notification.svg";
+import adminRequestIcon from "../../../public/adminRequest.svg";
 
 import { useNavigate, NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/authContext";
