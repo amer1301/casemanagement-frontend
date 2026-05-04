@@ -110,12 +110,6 @@ export const updateCaseStatus = async (
 export const assignCase = async (id: string) =>
   unwrap(await API.patch(`/cases/${id}/assign`));
 
-export const getDashboard = async () =>
-  unwrap(await API.get("/cases/dashboard"));
-
-export const getAdminStats = async () =>
-  unwrap(await API.get("/cases/dashboard/admins"));
-
 export const getUnassignedCases = async () =>
   unwrap(await API.get("/cases/unassigned"));
 
@@ -181,23 +175,5 @@ export const getNotes = async (caseId: string) =>
 export const addNote = async (caseId: string, text: string) =>
   unwrap(await API.post(`/cases/${caseId}/notes`, { text }));
 
-// REPORTS API
-
-/**
- * Laddar ner månadsrapport som CSV-fil.
- * Använder blob för att trigga filnedladdning i browsern.
- */
-export const downloadMonthlyReport = async () => {
-  const res = await API.get("/reports/monthly", {
-    responseType: "blob",
-  });
-
-  const url = window.URL.createObjectURL(new Blob([res.data]));
-  const link = document.createElement("a");
-  link.href = url;
-  link.setAttribute("download", "monthly-report.csv");
-  document.body.appendChild(link);
-  link.click();
-};
 
 export default API;
