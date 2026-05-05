@@ -310,6 +310,7 @@ button:disabled {
   border-radius: 12px;
   margin-bottom: 10px;
   background: rgba(255, 255, 255, 0.03);
+  position: relative;
 }
 
 .noteText {
@@ -508,6 +509,31 @@ button:disabled {
   background-size: 200% 100%;
   animation: shimmer 1.4s ease-in-out infinite;
   border-radius: 6px;
+}
+
+
+.deleteNote {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #A9A9F4;
+  border-radius: 50%;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.deleteNote:hover {
+  box-shadow: 
+    0 10px 25px rgba(37, 99, 235, 0.4),
+    0 0 10px rgba(59, 130, 246, 0.4);
 }
 
 @keyframes shimmer {

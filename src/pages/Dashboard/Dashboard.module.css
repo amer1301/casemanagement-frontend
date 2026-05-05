@@ -135,6 +135,23 @@
   box-shadow: 0 0 20px rgba(99,102,241,0.25);
 }
 
+.skeleton {
+  opacity: 0.7;
+}
+
+.skeleton :global(.react-loading-skeleton) {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.skeleton :global(.react-loading-skeleton::after) {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(169, 169, 244, 0.2),
+    transparent
+  );
+}
+
 @media (max-width: 1024px) {
   .grid {
     grid-template-columns: 1fr;

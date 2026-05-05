@@ -13,6 +13,8 @@ import {
   CartesianGrid,
   ResponsiveContainer
 } from "recharts";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 function Dashboard() {
   const [stats, setStats] = useState<any>(null);
@@ -39,7 +41,64 @@ function Dashboard() {
     fetchStats();
   }, [role]);
 
-  if (!stats) return <p>Laddar...</p>;
+  const DashboardSkeleton = () => {
+  return (
+    <div className={`${styles.dashboard} ${styles.skeleton}`}>
+      <main className={styles.main}>
+
+        <div className={styles.header}>
+          <Skeleton height={30} width={200} />
+          <Skeleton height={15} width={250} />
+        </div>
+
+        <div className={styles.grid}>
+          <div>
+
+            <div className={styles.cards}>
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className={styles.card}>
+                  <Skeleton height={30} width={60} />
+                  <Skeleton height={15} width={100} />
+                </div>
+              ))}
+            </div>
+
+            <div className={styles.chartContainer}>
+              <Skeleton height={20} width={200} />
+              <Skeleton height={300} />
+            </div>
+
+            <div className={styles.adminList}>
+              <Skeleton height={20} width={150} />
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} height={30} />
+              ))}
+            </div>
+
+          </div>
+
+          <div className={styles.sidebar}>
+            <Skeleton height={20} width={150} />
+
+            <div className={styles.profileCard}>
+              <Skeleton count={3} />
+            </div>
+
+            <Skeleton height={40} />
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+if (!stats) {
+  return (
+    <Layout>
+      <DashboardSkeleton />
+    </Layout>
+  );
+}
 
   return (
     <Layout>

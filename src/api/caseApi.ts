@@ -94,6 +94,10 @@ export const createCase = async (data: {
 export const deleteCase = async (id: number) =>
   unwrap(await API.delete(`/cases/${id}`));
 
+export const deleteNote = async (noteId: number) => {
+  await API.delete(`/notes/${noteId}`);
+};
+
 export const updateCaseStatus = async (
   id: string,
   status: string,
