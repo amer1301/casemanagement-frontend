@@ -494,6 +494,51 @@ button:disabled {
   animation: fadeIn 0.2s ease-in-out;
 }
 
+.skeleton {
+  opacity: 0.9;
+}
+
+.skeleton span {
+  background: linear-gradient(
+    90deg,
+    #1e293b 25%,
+    #334155 50%,
+    #1e293b 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: 6px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton .caseMain > * {
+  margin-bottom: 16px;
+}
+
+.skeleton .metaBox {
+  margin-top: 16px;
+}
+
+.skeleton .statusBox {
+  margin-top: 16px;
+}
+
+.skeleton .assignedBox {
+  margin-top: 16px;
+}
+
+.skeleton .caseSidebar > * {
+  margin-bottom: 12px;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

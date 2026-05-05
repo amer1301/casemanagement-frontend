@@ -11,7 +11,8 @@ import {
   addNote,
   updatePriority
 } from "../../api/caseApi";
-
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import type { Case } from "../../types/Case";
 import type { Log } from "../../types/Log";
 import Layout from "../../components/layout/Layout";
@@ -238,13 +239,48 @@ function CaseDetail() {
     }
   };
 
-  if (loading) {
-    return (
-      <Layout>
-        <p>Laddar...</p>
-      </Layout>
-    );
-  }
+const CaseDetailSkeleton = () => {
+  return (
+    <div className={`${styles.caseDetail} ${styles.skeleton}`}>
+      <div className={styles.caseMain}>
+        <Skeleton height={40} width="60%" />
+
+        <Skeleton count={3} />
+
+        <div className={styles.metaBox}>
+          <div className={styles.infoBox}>
+            <Skeleton height={15} width="80%" />
+            <Skeleton height={15} width="70%" />
+            <Skeleton height={15} width="60%" />
+          </div>
+        </div>
+
+        <div className={styles.statusBox}>
+          <Skeleton height={20} width={120} />
+          <Skeleton height={25} width={80} />
+        </div>
+
+        <div className={styles.assignedBox}>
+          <Skeleton height={20} width={150} />
+        </div>
+      </div>
+
+      <div className={styles.caseSidebar}>
+        <Skeleton height={40} />
+        <Skeleton height={40} />
+        <Skeleton height={200} />
+      </div>
+    </div>
+  );
+};
+
+if (loading) {
+  return (
+    <Layout>
+      <CaseDetailSkeleton />
+    </Layout>
+  );
+}
 
   if (notFound) {
     return (
