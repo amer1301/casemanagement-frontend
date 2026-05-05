@@ -86,7 +86,7 @@ const Layout = ({ children }: LayoutProps) => {
                       : styles.navItem
                   }
                 >
-                  <img src="/dashboard.svg" alt="dashboard" />
+                  <img src="/Dashboard.svg" alt="dashboard" />
                   <span>Översikt</span>
                 </NavLink>
               )}
