@@ -69,19 +69,23 @@ function Notifications() {
   /**
    * Skeleton loader
    */
-  const NotificationsSkeleton = () => {
-    return (
-      <div className={styles.list}>
-        {[1, 2, 3].map((i) => (
-          <div key={i} className={styles.card}>
-            <Skeleton width="80%" height={20} />
-            <Skeleton width={120} height={15} style={{ marginTop: 8 }} />
-            <Skeleton circle width={30} height={30} />
-          </div>
-        ))}
-      </div>
-    );
-  };
+const NotificationsSkeleton = () => {
+  return (
+    <div className={`${styles.list} ${styles.skeleton}`}>
+      {[1, 2, 3].map((i) => (
+        <div key={i} className={styles.card}>
+          
+          <Skeleton width="80%" height={20} />
+
+          <Skeleton width={120} height={15} style={{ marginTop: 8 }} />
+
+          <Skeleton circle width={30} height={30} />
+
+        </div>
+      ))}
+    </div>
+  );
+};
 
   return (
     <Layout>

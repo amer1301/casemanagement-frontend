@@ -100,31 +100,33 @@ function CaseList() {
   /**
    * Skeleton rows
    */
-  const CaseListSkeleton = () => {
-    return (
-      <>
-        {[1, 2, 3, 4, 5].map((i) => (
-          <div key={i} className={styles.row}>
-            <div className={styles.field}>
-              <Skeleton width="80%" />
-            </div>
-
-            <div className={styles.field}>
-              <Skeleton width={100} />
-            </div>
-
-            <div className={styles.field}>
-              <Skeleton width={120} />
-            </div>
-
-            <div className={styles.field}>
-              <Skeleton width={80} />
-            </div>
+const CaseListSkeleton = () => {
+  return (
+    <div className={styles.skeleton}>
+      {[1, 2, 3, 4, 5].map((i) => (
+        <div key={i} className={styles.row}>
+          
+          <div className={styles.field}>
+            <Skeleton width="80%" />
           </div>
-        ))}
-      </>
-    );
-  };
+
+          <div className={styles.field}>
+            <Skeleton width={100} />
+          </div>
+
+          <div className={styles.field}>
+            <Skeleton width={120} />
+          </div>
+
+          <div className={styles.field}>
+            <Skeleton width={80} />
+          </div>
+
+        </div>
+      ))}
+    </div>
+  );
+};
 
   return (
     <Layout>

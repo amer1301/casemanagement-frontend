@@ -80,21 +80,27 @@ function MyCases() {
   /**
    * Skeleton loader
    */
-  const MyCasesSkeleton = () => {
-    return (
-      <>
-        {[1, 2, 3, 4].map((i) => (
-          <div key={i} className={styles.row}>
-            <Skeleton width="60%" />
-            <Skeleton width={100} />
-            <Skeleton width="40%" />
-            <Skeleton width={80} height={25} />
-            <Skeleton circle width={30} height={30} />
-          </div>
-        ))}
-      </>
-    );
-  };
+const MyCasesSkeleton = () => {
+  return (
+    <div className={styles.skeleton}>
+      {[1, 2, 3, 4].map((i) => (
+        <div key={i} className={styles.row}>
+          
+          <Skeleton width="60%" />
+
+          <Skeleton width={100} />
+
+          <Skeleton width="40%" />
+
+          <Skeleton width={80} height={25} />
+
+          <Skeleton circle width={30} height={30} />
+
+        </div>
+      ))}
+    </div>
+  );
+};
 
   return (
     <Layout>
