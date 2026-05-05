@@ -27,42 +27,57 @@ function Login() {
    * - Sparar token + user info i context
    * - Redirectar beroende på roll
    */
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
+const handleLogin = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError("");
 
-    try {
-      const res = await loginUser({
-        email,
-        password,
-      });
+  try {
+    const res = await loginUser({
+      email,
+      password,
+    });
 
-      const { token, role, email: userEmail, name } = res;
-
-      // Säkerhetscheck: backend måste returnera token
-      if (!token) {
-        throw new Error("No token received");
-      }
-
-      // Sparar auth-data globalt (context + localStorage)
-      setAuth({
-        token,
-        email: userEmail,
-        name,
-      });
-
-      // Redirect baserat på roll
-      if (role === "USER") {
-        navigate("/my-cases");
-      } else {
-        navigate("/");
-      }
-
-    } catch (err) {
-      console.error("Login failed", err);
-      setError("Fel email eller lösenord");
+    if (!res) {
+      throw new Error("No response from server");
     }
-  };
+
+    const { token, role, email: userEmail, name } = res;
+
+    if (!token) {
+      throw new Error("No token received");
+    }
+
+    setAuth({
+      token,
+      email: userEmail,
+      name,
+    });
+
+    if (role === "USER") {
+      navigate("/my-cases");
+    } else {
+      navigate("/");
+    }
+
+  } catch (err: any) {
+    console.error("Login failed:", err);
+
+    if (err?.response) {
+      const message =
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        "Fel email eller lösenord";
+
+      setError(message);
+
+    } else if (err?.request) {
+      setError("Kan inte nå servern. Kontrollera backend URL.");
+
+    } else {
+      setError(err.message || "Ett oväntat fel uppstod");
+    }
+  }
+};
 
   return (
     <div className={styles.wrapper}>
