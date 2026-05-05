@@ -158,7 +158,7 @@ npm run build
 ```
 ---
 ## Publicering
-https://bokrecension-frontend.onrender.com
+https://casemanagement-frontend.onrender.com
 
 ## Demo-användare för testning
 email: manager@system.local
