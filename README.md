@@ -1,73 +1,158 @@
-# React + TypeScript + Vite
+# Case Management Frontend
+A React + TypeScript frontend application for managing cases, users, and notifications. This app connects to a backend API and provides a UI for case handling, authentication, and admin functionality.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 📦 Tech Stack
+- React
+- TypeScript
+- Vite
+- React Router
+- React Query
+- CSS Modules
+- Context API (authentication state)
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Features
 
-## React Compiler
+### Authentication
+- Login & registration
+- Auth state handled via context (authContext)
+- Protected routes (ProtectedRoute)
+  
+### Case Management
+- View all cases
+- View case details
+- Create new cases
+- View "My Cases"
+  
+### Notes & Logs
+- Case logs and notes displayed in case details
+- Translations for statuses, categories, and logs
+  
+### Notifications
+- User notifications page
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Admin Features
+- Admin dashboard
+- Admin role requests handling
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🧱 Project Structure
+```
+src/
+│
+├── api/            # API calls (cases, stats)
+├── assets/         # Static assets (icons)
+├── components/
+│   ├── Header/
+│   ├── layout/
+│   └── ProtectedRoute.tsx
+│
+├── context/        # Auth context
+├── lib/            # React Query setup
+├── pages/          # App pages
+│   ├── Dashboard/
+│   ├── CaseList/
+│   ├── CaseDetail/
+│   ├── CreateCase/
+│   ├── MyCases/
+│   ├── Notifications/
+│   ├── Login/
+│   ├── Register/
+│   └── AdminRequest/
+│
+├── types/          # TypeScript types
+├── utils/          # Translations & helpers
+│
+├── App.tsx
+└── main.tsx
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
+## ⚙️ Setup & Run
+1. Install dependencies
+```bash
+npm install
+```
+2. Start development server
+```bash
+npm run dev
+```
+App will run at:
+```bash
+http://localhost:5173
+```
+## 🔧 Environment Variables
+Environment variables are defined in:
+```
+.env
+```
+Typical usage (based on API structure):
+```
+VITE_API_BASE_URL=http://localhost:8080
+```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🔌 API Integration
+API calls are handled in:
+```
+src/api/
+```
+Includes:
+- caseApi.ts
+-statsApi.ts
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Uses React Query for:
+- Data fetching
+- Caching
+- Server state management
+
+### 🔐 Routing & Protection
+- Routing handled via React Router
+- Protected routes implemented with:
+```
+ProtectedRoute.tsx
+```
+- Layout wrapper:
+```
+components/layout/Layout.tsx
+```
+
+## 🎨 Styling
+- CSS Modules used for scoped styles
+- Each page/component has its own .module.css
+
+Example:
+```
+Dashboard.module.css
+CaseList.module.css
+```
+## 🌍 Translations / Mapping
+Utility mappings for backend values:
+```
+src/utils/
+```
+includes: 
+- statusTranslations.ts
+- categoryTranslations.ts
+- logTranslations.ts
+
+## 🧠 State Management
+Global auth state via Context API:
+- authContext.tsx
+Server state via React Query:
+- lib/reactQuery.ts
+
+## 📄 Pages Overview
+- / → Dashboard
+- /cases → Case list
+- /cases/:id → Case detail
+- /create → Create case
+- /my-cases → User-specific cases
+- /notifications → Notifications
+- /login → Login
+- /register → Register
+- /admin/requests → Admin role requests
+
+## 📦 Build
+```bash
+npm run build
 ```
