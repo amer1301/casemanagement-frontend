@@ -5,34 +5,31 @@ import Layout from "../../components/layout/Layout";
 import styles from "./MyCases.module.css";
 import { useNavigate } from "react-router-dom";
 import { translateStatus } from "../../utils/statusTranslations";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 /**
  * MyCases visar ärenden beroende på användarroll:
  *
  * - USER → egna skapade ärenden
  * - ADMIN → tilldelade ärenden
- *
- * Funktionalitet:
- * - Hämtar data baserat på roll
- * - Navigerar till detaljsida
- * - Tillåter borttagning av ärenden
  */
 function MyCases() {
   const [cases, setCases] = useState<any[]>([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const { role } = useAuth();
   const navigate = useNavigate();
 
   /**
    * Hämtar ärenden beroende på roll.
-   *
-   * - ADMIN → tilldelade ärenden
-   * - USER → egna ärenden
    */
   useEffect(() => {
     const fetchCases = async () => {
+      setLoading(true);
+
       try {
         let res;
 
@@ -42,17 +39,20 @@ function MyCases() {
           res = await getMyCases();
         }
 
-        setCases(res);
+        setCases(res || []);
       } catch (err) {
         console.error(err);
+        setCases([]);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchCases();
+    if (role) fetchCases();
   }, [role]);
 
   /**
-   * Öppnar delete-modal och sparar valt id.
+   * Öppnar delete-modal
    */
   const openDeleteModal = (id: number) => {
     setSelectedId(id);
@@ -60,7 +60,7 @@ function MyCases() {
   };
 
   /**
-   * Tar bort ärende och uppdaterar listan lokalt.
+   * Tar bort ärende
    */
   const handleDelete = async () => {
     if (!selectedId) return;
@@ -68,7 +68,6 @@ function MyCases() {
     try {
       await deleteCase(selectedId);
 
-      // Uppdaterar UI direkt efter borttagning
       setCases((prev) => prev.filter((c) => c.id !== selectedId));
     } catch (err) {
       console.error(err);
@@ -78,18 +77,38 @@ function MyCases() {
     }
   };
 
+  /**
+   * Skeleton loader
+   */
+  const MyCasesSkeleton = () => {
+    return (
+      <>
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className={styles.row}>
+            <Skeleton width="60%" />
+            <Skeleton width={100} />
+            <Skeleton width="40%" />
+            <Skeleton width={80} height={25} />
+            <Skeleton circle width={30} height={30} />
+          </div>
+        ))}
+      </>
+    );
+  };
+
   return (
     <Layout>
       <div className={styles.container}>
         <main className={styles.main}>
           <div className={styles.header}>
             <h1>
-              {role === "ADMIN" ? "Mina tilldelade ärenden" : "Mina ärenden"}
+              {role === "ADMIN"
+                ? "Mina tilldelade ärenden"
+                : "Mina ärenden"}
             </h1>
           </div>
 
           <div className={styles.table}>
-
             <div className={styles.tableHeader}>
               <span>Titel</span>
               <span>Skapad</span>
@@ -98,7 +117,9 @@ function MyCases() {
               <span></span>
             </div>
 
-            {cases.length === 0 ? (
+            {loading ? (
+              <MyCasesSkeleton />
+            ) : cases.length === 0 ? (
               <p className={styles.empty}>
                 {role === "ADMIN"
                   ? "Inga tilldelade ärenden"
@@ -136,7 +157,7 @@ function MyCases() {
                   <button
                     className={styles.deleteBtn}
                     onClick={(e) => {
-                      e.stopPropagation(); // Förhindrar navigation vid klick på delete
+                      e.stopPropagation();
                       openDeleteModal(c.id);
                     }}
                   >
@@ -145,16 +166,13 @@ function MyCases() {
                 </div>
               ))
             )}
-
           </div>
 
           {showDeleteModal && (
             <div className={styles.modalOverlay}>
               <div className={styles.modal}>
                 <h3>Bekräfta borttagning</h3>
-                <p>
-                  Är du säker på att du vill ta bort detta ärende?
-                </p>
+                <p>Är du säker på att du vill ta bort detta ärende?</p>
 
                 <div className={styles.modalActions}>
                   <button onClick={() => setShowDeleteModal(false)}>

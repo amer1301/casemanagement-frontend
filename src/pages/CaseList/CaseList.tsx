@@ -6,10 +6,13 @@ import { useAuth } from "../../context/authContext";
 import { getCases, deleteCase } from "../../api/caseApi";
 import { translateStatus } from "../../utils/statusTranslations";
 import { ArrowUp, ArrowDown } from "lucide-react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 function CaseList() {
   const [cases, setCases] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState("");
@@ -26,6 +29,8 @@ function CaseList() {
 
   useEffect(() => {
     const fetchCases = async () => {
+      setLoading(true);
+
       try {
         let res;
 
@@ -59,11 +64,13 @@ function CaseList() {
       } catch (err) {
         console.error(err);
         setCases([]);
+      } finally {
+        setLoading(false);
       }
     };
 
     if (role) fetchCases();
-  }, [page, search, statusFilter, assignedFilter, sortBy, direction]);
+  }, [page, search, statusFilter, assignedFilter, sortBy, direction, role]);
 
   const handleDelete = async () => {
     if (!selectedCaseId) return;
@@ -89,6 +96,35 @@ function CaseList() {
         .map((c) => [c.assignedTo, c.assignedToName])
     ).entries()
   );
+
+  /**
+   * Skeleton rows
+   */
+  const CaseListSkeleton = () => {
+    return (
+      <>
+        {[1, 2, 3, 4, 5].map((i) => (
+          <div key={i} className={styles.row}>
+            <div className={styles.field}>
+              <Skeleton width="80%" />
+            </div>
+
+            <div className={styles.field}>
+              <Skeleton width={100} />
+            </div>
+
+            <div className={styles.field}>
+              <Skeleton width={120} />
+            </div>
+
+            <div className={styles.field}>
+              <Skeleton width={80} />
+            </div>
+          </div>
+        ))}
+      </>
+    );
+  };
 
   return (
     <Layout>
@@ -167,7 +203,9 @@ function CaseList() {
               <span>Status</span>
             </div>
 
-            {cases.length === 0 ? (
+            {loading ? (
+              <CaseListSkeleton />
+            ) : cases.length === 0 ? (
               <p className={styles.empty}>Inga ärenden hittades</p>
             ) : (
               cases.map((c) => (

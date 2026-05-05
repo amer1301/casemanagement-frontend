@@ -119,6 +119,22 @@
   background: rgba(255,255,255,0.1);
 }
 
+.skeleton {
+  opacity: 0.9;
+}
+
+.skeleton :global(.react-loading-skeleton) {
+  background: linear-gradient(
+    90deg,
+    #1e293b 25%,
+    #334155 50%,
+    #1e293b 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: 6px;
+}
+
 @media (max-width: 900px) {
 
   .container {

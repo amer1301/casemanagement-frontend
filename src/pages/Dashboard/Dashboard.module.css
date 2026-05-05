@@ -140,16 +140,15 @@
 }
 
 .skeleton :global(.react-loading-skeleton) {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.skeleton :global(.react-loading-skeleton::after) {
   background: linear-gradient(
     90deg,
-    transparent,
-    rgba(169, 169, 244, 0.2),
-    transparent
+    #1e293b 25%,
+    #334155 50%,
+    #1e293b 75%
   );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: 6px;
 }
 
 @media (max-width: 1024px) {
