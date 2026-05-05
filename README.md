@@ -156,3 +156,10 @@ Server state via React Query:
 ```bash
 npm run build
 ```
+---
+## Publicering
+https://bokrecension-frontend.onrender.com
+
+## Demo-användare för testning
+email: manager@system.local
+password: manager123
