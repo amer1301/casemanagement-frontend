@@ -185,11 +185,7 @@ const Layout = ({ children }: LayoutProps) => {
           )}
 
           <div className={styles.logout} onClick={handleAuthClick}>
-            <img
-  src={isLoggedIn ? "/logOut.svg" : "/logIn.svg"}
-  alt="auth"
-/>
-<span>{isLoggedIn ? "Logga ut" : "Logga in"}</span>
+  <img src="/logOut.svg" alt="logout" />
           </div>
         </aside>
 
