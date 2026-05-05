@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import styles from "./Layout.module.css";
 import Header from "../Header/Header";
-
+import logoutIcon from "../../assets/logOut.svg";
 import { useNavigate, NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/authContext";
 import { useEffect, useState } from "react";
@@ -185,7 +185,10 @@ const Layout = ({ children }: LayoutProps) => {
           )}
 
           <div className={styles.logout} onClick={handleAuthClick}>
-  <img src="/logOut.svg" alt="logout" />
+<div className={styles.logout} onClick={handleAuthClick}>
+  <img src={logoutIcon} alt="logout" />
+  <span>Logga ut</span>
+</div>
           </div>
         </aside>
 
