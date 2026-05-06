@@ -70,6 +70,7 @@ export const getCases = async (params: {
   sortBy?: string;
   direction?: string;
   assignedTo?: number;
+  priority?: number;
 }) => {
   const res = await API.get("/cases", { params });
   return res.data;

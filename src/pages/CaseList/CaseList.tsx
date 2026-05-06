@@ -18,7 +18,8 @@ function CaseList() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [assignedFilter, setAssignedFilter] = useState("");
-  const [sortBy, setSortBy] = useState("createdAt");
+  const [priorityFilter, setPriorityFilter] = useState("");
+  const [sortBy, setSortBy] = useState("priority");
   const [direction, setDirection] = useState<"asc" | "desc">("desc");
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -42,12 +43,13 @@ function CaseList() {
             q: search || undefined,
             sortBy,
             direction,
+            priority: priorityFilter ? Number(priorityFilter) : undefined,
             assignedTo:
               assignedFilter === ""
                 ? undefined
                 : assignedFilter === "unassigned"
-                ? -1
-                : Number(assignedFilter),
+                  ? -1
+                  : Number(assignedFilter),
           });
         } else if (role === "ADMIN") {
           res = await getCases({
@@ -56,6 +58,7 @@ function CaseList() {
             q: search || undefined,
             sortBy,
             direction,
+            priority: priorityFilter ? Number(priorityFilter) : undefined,
           });
         }
 
@@ -100,33 +103,33 @@ function CaseList() {
   /**
    * Skeleton rows
    */
-const CaseListSkeleton = () => {
-  return (
-    <div className={styles.skeleton}>
-      {[1, 2, 3, 4, 5].map((i) => (
-        <div key={i} className={styles.row}>
-          
-          <div className={styles.field}>
-            <Skeleton width="80%" />
-          </div>
+  const CaseListSkeleton = () => {
+    return (
+      <div className={styles.skeleton}>
+        {[1, 2, 3, 4, 5].map((i) => (
+          <div key={i} className={styles.row}>
 
-          <div className={styles.field}>
-            <Skeleton width={100} />
-          </div>
+            <div className={styles.field}>
+              <Skeleton width="80%" />
+            </div>
 
-          <div className={styles.field}>
-            <Skeleton width={120} />
-          </div>
+            <div className={styles.field}>
+              <Skeleton width={100} />
+            </div>
 
-          <div className={styles.field}>
-            <Skeleton width={80} />
-          </div>
+            <div className={styles.field}>
+              <Skeleton width={120} />
+            </div>
 
-        </div>
-      ))}
-    </div>
-  );
-};
+            <div className={styles.field}>
+              <Skeleton width={80} />
+            </div>
+
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <Layout>
@@ -161,6 +164,20 @@ const CaseListSkeleton = () => {
                   <option value="APPROVED">Godkänd</option>
                   <option value="REJECTED">Avslagen</option>
                   <option value="SUBMITTED">Inskickad</option>
+                </select>
+                <select
+                  value={priorityFilter}
+                  onChange={(e) => {
+                    setPriorityFilter(e.target.value);
+                    setPage(0);
+                  }}
+                >
+                  <option value="">Alla prioriteter</option>
+                  <option value="5">Prioritet 5</option>
+                  <option value="4">Prioritet 4</option>
+                  <option value="3">Prioritet 3</option>
+                  <option value="2">Prioritet 2</option>
+                  <option value="1">Prioritet 1</option>
                 </select>
 
                 <select
@@ -203,6 +220,7 @@ const CaseListSkeleton = () => {
               </span>
               <span>Handläggare</span>
               <span>Status</span>
+              <span>Prioritet</span>
             </div>
 
             {loading ? (
@@ -238,11 +256,19 @@ const CaseListSkeleton = () => {
                   <div className={styles.field}>
                     <span className={styles.label}>Status</span>
                     <span
-                      className={`${styles.badge} ${
-                        styles[c.status.toLowerCase()]
-                      }`}
+                      className={`${styles.badge} ${styles[c.status.toLowerCase()]
+                        }`}
                     >
                       {translateStatus(c.status)}
+                    </span>
+                  </div>
+                  <div className={styles.field}>
+                    <span className={styles.label}>Prioritet</span>
+
+                    <span
+                      className={`${styles.priorityBadge} ${styles[`priority${c.priority}`]}`}
+                    >
+                      P{c.priority}
                     </span>
                   </div>
 
